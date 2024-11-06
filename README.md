@@ -1,1 +1,1 @@
-# Portuguese-School-System-DB-Modeling-
+# Portuguese-School-System-DB-Modeling
