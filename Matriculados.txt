@@ -1,0 +1,31 @@
+Alunos Matriculados no Ensino pré-primário, básico e secundário em Portugal em 2017-2018
+Fonte: DGEEC
+
+Colunas
+ANO LETIVO
+CÓDICO DGEEC ENTIDADE
+ENTIDADE - nalguns casos raros a entidade que detém a escola tem um nome diferente (ensino privado)
+CÓDIGO DGEEC ESCOLA
+ESCOLA
+REDE - AGRUPADA (a escola faz parte de um agrupamento e não é a sede); NÂO AGRUPADA (a escola é isolada); SEDE (a escola faz parte de um agrupamento e é a sede)
+CÓDIGO DGEEC AGRUPAMENTO
+AGRUPAMENTO	- nome do agrupamento
+CÓDIGO DGEEC ESCOLA SEDE
+ESCOLA SEDE
+NUTS II (2013) - Região administrativa, classificação de 2013
+NUTS III (2013) - Grupo de concelhos, classificação de 2013
+NUTS II (2002) - ignorar
+NUTS III (2002) - ignorar
+DISTRITO
+CONCELHO
+NATUREZA - Público, Privado dependente do estado, Privado independente
+TIPOLOGIA
+ORIENTAÇÃO 
+NÍVEL DE  ENSINO
+CICLO DE ESTUDOS
+OFERTA
+ORGANIZAÇÃO
+ANO DE ESCOLARIDADE
+CURSO
+SEXO
+NÚMERO DE ALUNOS MATRICULADOS
