@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Agregação Dupla</h1>
+
+<p>
+    A agregação dupla consiste, essencialmente, na utlização de funcoes de agregação a dois níveis: na query principal e na subquery. Esta técnica é bastante útil, por exemplo, quando queremos encontrar o objeto com mais instâncias na tabela, como vemos já a seguir.
+    <br><br>
+    Por exemplo, considere a tabela <b>jogadores</b>:
+</p>
+    <h3>Jogadores</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>CODIGO</th>
+                <th>NOME</th>
+                <th>EQUIPA</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>João</td>
+                <td>Barcelona</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Maria</td>
+                <td>Real Madrid</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Pedro</td>
+                <td>Manchester United</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>Ana</td>
+                <td>Bayern Munich</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>Luís</td>
+                <td>Barcelona</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>Rita</td>
+                <td>Real Madrid</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>Carlos</td>
+                <td>Real Madrid</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td>Inês</td>
+                <td>Manchester United</td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td>Paulo</td>
+                <td>Barcelona</td>
+            </tr>
+            <tr>
+                <td>10</td>
+                <td>Sofia</td>
+                <td>Real Madrid</td>
+            </tr>
+        </tbody>
+    </table>
+
+<p>
+    Digamos que se quer saber qual é, destas equipas, a que tem mais jogadores.
+    <br><br>
+    Evidentemente, é necessário descobrir primeiro quantos jogadores tem cada equipa. Para isso utilizamos a função de agregação <b>COUNT()</b>, como demonstrado na seguinte query:
+</p>
+
+<pre><code class="language-sql">SELECT equipa, COUNT(*) AS "Nº JOGADORES"
+FROM jogadores
+GROUP BY equipa;
+</code></pre>
+<p>
+    Que resultaria na tabela:
+</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>EQUIPA</th>
+            <th>Nº JOGADORES</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Barcelona</td>
+            <td>3</td>
+        </tr>
+        <tr>
+            <td>Real Madrid</td>
+            <td>4</td>
+        </tr>
+        <tr>
+            <td>Manchester United</td>
+            <td>2</td>
+        </tr>
+        <tr>
+            <td>Bayern Munich</td>
+            <td>1</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>
+    Ora, mas queremos apenas a equipa com o máximo de jogadores. Assim, de modo a não guardar tabelas desnecessáriamente, podemos encapsular a informação obtida acima numa subquery e extrair apenas o máximo, através da função de agregação <b>MAX()</b>, como demonstrado abaixo: 
+</p>
+
+<pre><code class="language-sql">SELECT equipa, MAX("Nº JOGADORES")
+FROM (
+    SELECT equipa, COUNT(*) AS "nº jogadores"
+    FROM jogadores
+    GROUP BY equipa
+);
+</code></pre>
+
+<p>
+    De tal forma obtém-se a seguinte tabela:
+</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>EQUIPA</th>
+            <th>Nº JOGADORES</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Real Madrid</td>
+            <td>4</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>
+    Conclui-se, portanto, com recurso à <b>agregação dupla</b>, que a equipa com mais jogadores é o <b>Real Madrid</b>.
+</p>
+
+{% endblock %}
