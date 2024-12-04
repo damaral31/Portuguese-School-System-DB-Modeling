@@ -8,7 +8,7 @@ df = pd.read_excel('AlunosMatriculados17.xlsx')
 conn = sqlite3.connect('AlunosMatriculados.db')
 cursor = conn.cursor()
 
-'''# Apagar todos os dados das colunas cod e NUTII
+# Apagar todos os dados das colunas cod e NUTII
 cursor.execute("DELETE FROM NUTSII")
 
 # Extrair a coluna 'NUTS II (2013)' do DataFrame e convertê-la numa lista
@@ -38,7 +38,7 @@ for nutsiii, nutsii in NUTSIII:
     cod += 1
 
 # Confirmar as alterações na base de dados
-'''
+
 
 Distritos = df['DISTRITO'].unique().tolist()
 cod_distrito = 50
