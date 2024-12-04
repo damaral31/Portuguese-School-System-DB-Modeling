@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>row_number()</h1>
+
+<p>
+    A função <b>row_number()</b>, juntamente à palavra <b>OVER</b>, cria uma coluna relativa a ordem cardinal das linhas.
+    <br><br>
+    Por exemplo, considere a tabela <b>jogadores</b>:
+</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Equipa</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Miguel</td>
+            <td>Barcelona</td>
+        </tr>
+        <tr>
+            <td>Diogo</td>
+            <td>Real Madrid</td>
+        </tr>
+        <tr>
+            <td>Afonso</td>
+            <td>Bayern Munich</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>
+    E se a query introduzida for:
+</p>
+
+<pre><code>SELECT 
+    ROW_NUMBER() OVER (ORDER BY nome) AS row,
+    nome,
+    equipa
+FROM 
+    jogadores;
+</code></pre>
+
+<p>
+    O resultado seria:
+</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>ROW</th>
+            <th>Nome</th>
+            <th>Equipa</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>1</td>
+            <td>Miguel</td>
+            <td>Barcelona</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>Diogo</td>
+            <td>Real Madrid</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>Afonso</td>
+            <td>Bayern Munich</td>
+        </tr>
+    </tbody>
+</table>
+
+{% endblock %}
