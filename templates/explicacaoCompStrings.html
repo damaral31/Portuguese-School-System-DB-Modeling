@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Comparação de Strings</h1>
+
+
+<p> Em SQL é possível selecionar apenas as linhas ou colunas segundo alguma informação em específico.
+<br>Por exemplo, considere a tabela <b>nomes</b>:
+</p>
+
+<table>
+    <tr>
+        <th>Nome</th>
+        <th>Idade</th>
+    </tr>
+    <tr>
+        <td>joana</td>
+        <td>18</td>
+    </tr>
+    <tr>
+        <td>ana</td>
+        <td>25</td>
+
+    </tr>
+    <tr>
+        <td>maria</td>
+        <td>30</td>
+    </tr>
+    <tr>
+        <td>mariana</td>
+        <td>12</td>
+    </tr>
+    <tr>
+        <td>mariano</td>
+        <td>60</td>
+    </tr>
+</table>
+
+<p><br><br>Eis a seguinte query:
+</p>
+
+<pre>
+    <code class = "language-sql">
+        SELECT * 
+        FROM nomes
+        WHERE nome like 'maria';
+    </code>
+</pre>
+
+<p>
+    Este comando irá selecionar <b>todas</b> as linhas da tabela <b>nomes</b> na qual o o valor da coluna nome é igual a <b>maria</b>:
+</p>
+
+<table>
+    <tr>
+        <th>Nome</th>
+        <th>Idade</th>
+    </tr>
+    <tr>
+        <td>maria</td>
+        <td>30</td>
+    </tr>
+</table>
+
+<p><br><br>Eis a seguinte query:
+</p>
+
+<pre>
+    <code class = "language-sql">
+        SELECT * 
+        FROM nomes
+        WHERE nome like '%ana%';
+    </code>
+</pre>
+
+<p>
+    Este comando irá selecionar <b>todas</b> as linhas da tabela <b>nomes</b> na qual o o valor da coluna <b>nome</b> tem contido <b>ana</b> em qualquer parte:
+</p>
+
+<table>
+    <tr>
+        <th>Nome</th>
+        <th>Idade</th>
+    </tr>
+    <tr>
+        <td>joana</td>
+        <td>18</td>
+    </tr>
+    <tr>
+        <td>ana</td>
+        <td>25</td>
+    </tr>
+    <tr>
+        <td>mariana</td>
+        <td>12</td>
+    </tr>
+</table>
+
+<p>
+    <br><br>Eis a seguinte query:
+</p>
+
+<pre>
+    <code class = "language-sql">
+        SELECT * 
+        FROM nomes
+        WHERE nome like 'marian_';
+    </code>
+</pre>
+
+<p>
+    Este comando irá selecionar <b>todas</b> as linhas da tabela <b>nomes</b> na qual o o valor da coluna <b>nome</b> começa por <b>marian</b> e termina com apenas <b>1</b> caracter qualquer:
+
+</p>
+
+<table>
+    <tr>
+        <th>Nome</th>
+        <th>Idade</th>
+    </tr>
+    <tr>
+        <td>mariana</td>
+        <td>12</td>
+    </tr>
+    <tr>
+        <td>mariano</td>
+        <td>60</td>
+    </tr>
+</table>
+
+{% endblock %}
