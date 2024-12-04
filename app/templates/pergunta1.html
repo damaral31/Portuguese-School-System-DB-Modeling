@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Pergunta 1</h1>
+<p>
+    <b>Tópicos:</b> select, tipos de join, order by, funções de agregação
+</p>
+
+<h2>Enunciado</h2>
+<p>
+    <b>Em cada concelho, quantas escolas que NÃO pertencem a um agrupamento existem?</b>
+    Utilize vários tipos de JOIN. Apresente o nome do concelho e o número de escolas, e ordene pelo nome do concelho.
+</p>
+
+<h2>Resolução</h2>
+<p>
+    Começemos por compreender quais as colunas pedidas no enunciado.
+    <br>
+    Ora, pelo enunciado quer-se não só o nome dos concelhos que satisfazem a condição (concelhos.concelho), mas também a contagem das escolas não pertencentes a agrupamentos, isto é, 
+</p>
+
+{% endblock %}

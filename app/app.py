@@ -51,3 +51,7 @@ def agregacaoDupla():
 @APP.route('/explicacao/row_number')
 def rowNumber():
     return render_template('explicacaoRowNumber.html')
+
+@APP.route('/pergunta/1')
+def pergunta1():
+    return render_template('pergunta1.html')
