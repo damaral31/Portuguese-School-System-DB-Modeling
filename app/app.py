@@ -18,35 +18,23 @@ def index():
 
     return render_template('index.html',stats=stats)
 
-@APP.route('/distritos/')
-def listar_distritos():
-    distritos = db.execute('''
-        SELECT distritos.cod, distritos.designacao, COUNT(*) num_concelhos
-        FROM distritos 
-        JOIN concelhos ON concelhos.distrito = distritos.cod
-        GROUP BY distritos.cod
-        ORDER BY distritos.cod
-    ''').fetchall()
-    return render_template('listar_distritos.html', distritos=distritos)
 
-@APP.route('/distritos/<int:codigo>/')
-def distrito(codigo):
-    # Obtém dados do distrito
-    distrito = db.execute('''
-        SELECT cod, designacao
-        FROM distritos 
-        WHERE cod = ?
-    ''', [codigo]).fetchone()
-    # Obtém concelhos no distrito
-    concelhos = db.execute('''
-        SELECT cod, designacao
-        FROM concelhos WHERE distrito = ?
-        ORDER BY cod
-    ''', [codigo]).fetchall()
-    return render_template('distrito.html', 
-                            distrito=distrito,
-                            concelhos=concelhos)
-# TODO 
+
+@APP.route('/explicacao/Where')
+def where():
+    return render_template('Where_explicacao.html')
+
+@APP.route('/explicacao/Conjuntos')
+def conjuntos():
+    return render_template('Conjuntos_explicacao.html')
+
+@APP.route('/explicacao/Funcoesdeagregacao')
+def funcoes_de_agragacao():
+    return render_template('Funcoes_de_agregacoes.html')
+
+@APP.route('/explicacao/Case_explicacao')
+def case():
+    return render_template('Cases_explicacao.html')
 
 @APP.route('/explicacao/ORDER_BY')
 def orderby():
