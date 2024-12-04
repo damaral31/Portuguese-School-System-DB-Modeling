@@ -4,7 +4,7 @@
 
 <h1>Pergunta 4</h1>
 <p>
-    <b>Tópicos:</b> select, join, order by, agregacao dupla
+    <b>Tópicos:</b> select, tipos de join, order by, agregação dupla
 </p>
 
 <h2>Enunciado</h2>
@@ -16,52 +16,69 @@
 
 <h2>Resolução</h2>
 <p>
-    Começemos por compreender quais as colunas pedidas no enunciado.
-    <br><br>
-    Ora, pelo enunciado quer-se não só o nome dos concelhos que satisfazem a condição (<code class="language-sql">concelhos.concelho</code>), mas também a contagem das escolas não pertencentes a agrupamentos, isto é, um <code class="language-sql">COUNT(entidades.escola)</code>.
-    <br><br>
-    Então:
+    Começemos por selecionar as colunas pedidas acima:
 </p>
 
 <pre><code class="language-sql">SELECT
-concelhos.concelho,
-COUNT(entidades.escola)
+    distrito,
+    MIN(num) as Min
 </code></pre>
 
 <p>
-    Cabe-nos agora operar sobre as diversas tabelas de modo a obter a infomação desejada. Para isso vamos primeiro juntar as tabelas necessárias:
+    Mas como <code class="language-sql">MIN()</code> é uma função de agregação, é nos necessário criar o grupo ao qual se vai aplicar o filtro.
+    <br><br>
+    Tal grupo é, neste caso, a contagem de turmas de secundário por distrito. Assim faremos uma subquery de modo a obter essa tabela, começando por selecionar as colunas e juntar as tabelas necessárias:
 </p>
 
-<pre><code class="language-sql">FROM concelhos
+<pre><code class="language-sql">--Já dentro da subquery
+SELECT
+    distritos.distrito as distrito,
+    COUNT(turmas.cod) as num
+FROM distritos
+JOIN concelhos ON concelhos.distrito = distritos.cod
 JOIN entidades ON entidades.concelho = concelhos.cod
-LEFT JOIN agrupamentos ON agrupamentos.cod = entidades.agrupamento
+JOIN turmas ON turmas.entidade = entidades.cod
 </code></pre>
 
 <p>
-    <b>ATENÇÃO:</b> Note que, para juntar a tabela <code class="language-sql">Agrupamentos</code> utilizamos um <b>LEFT JOIN</b>. Isto porque, ao priorizar a tabela da esquerda, incluimos também no resultado as entidades sem correspondência em <code class="language-sql">Agrupamentos</code>.
-    <br><br>
-    Podemos finalmente filtrar as escolas e ordenar corretamente o resultado:
+    Mas como queremos as turmas de secundário (identificadas com nível <code class="language-sql">"Ensino Secundário"</code>):
 </p>
 
-<pre><code class="language-sql">WHERE agrupamentos.cod = NULL
-GROUP BY concelhos.cod;
+<pre><code class="language-sql">WHERE turmas.nivel like "Ensino Secundário"
 </code></pre>
 
 <p>
-    Procuramos nesta query por <code class="language-sql">NULL</code> pois, nas linhas em não existe correspondência para alguma coluna, tal coluna será preenchida com <code style='language-sql'>NULL</code>. Ou seja, em termos leigos, entidades sem agrupamento têm a coluna <code style='language-sql'>agrupamentos.cod = NULL</code>.
-    <br><br>
-    Em último lugar, ordenamos a tabela alfabeticamente pelos nomes dos concelhos.cod
-    <br><br>
-    Tendo tudo isso em conta, eis a query na tua totalidade:
+    E agrupando o <code class="language-sql">COUNT()</count> por distrito, fechamos a subquery:
 </p>
 
-<pre><code class="language-sql">QUERY INTEIRA
+<pre><code class="language-sql">GROUP BY distritos.cod
+--Fim da subquery
+</code></pre>
+
+<p>
+Tendo tudo isso em conta, eis a query na tua totalidade:
+</p>
+
+<pre><code class="language-sql">SELECT
+    distrito,
+    MIN(num) as Min
+FROM(
+    SELECT
+        distritos.distrito as distrito,
+        COUNT(turmas.cod) as num
+    FROM distritos
+    JOIN concelhos ON concelhos.distrito = distritos.cod
+    JOIN entidades ON entidades.concelho = concelhos.cod
+    JOIN turmas ON turmas.entidade = entidades.cod
+    WHERE turmas.nivel like "Ensino Secundário"
+    GROUP BY distritos.cod
+);
 </code></pre>
 
 <p>
     Que resulta na tabela:
 </p>
 
-<h1>INTRODUZIR TABELA DA PERGUNTA 1</h1>
+<h1>INTRODUZIR TABELA DA PERGUNTA 4</h1>
 
 {% endblock %}

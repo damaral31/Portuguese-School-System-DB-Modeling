@@ -57,5 +57,5 @@ def pergunta1():
     return render_template('pergunta1.html')
 
 @APP.route('/pergunta/4')
-def pergunta1():
+def pergunta4():
     return render_template('pergunta4.html')
