@@ -55,3 +55,7 @@ def rowNumber():
 @APP.route('/pergunta/1')
 def pergunta1():
     return render_template('pergunta1.html')
+
+@APP.route('/pergunta/4')
+def pergunta1():
+    return render_template('pergunta4.html')

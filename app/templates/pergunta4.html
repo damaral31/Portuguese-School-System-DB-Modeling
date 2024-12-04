@@ -2,16 +2,16 @@
 
 {% block content %}
 
-<h1>Pergunta 1</h1>
+<h1>Pergunta 4</h1>
 <p>
-    <b>Tópicos:</b> select, tipos de join, order by, funções de agregação
+    <b>Tópicos:</b> select, join, order by, agregacao dupla
 </p>
 
 <h2>Enunciado</h2>
 <p>
-    <b>Em cada concelho, quantas escolas que NÃO pertencem a um agrupamento existem?</b>
+    <b>Qual e o distrito com menos turmas de nivel de ensino secundario?</b>
     <br><br>
-    Utilize vários tipos de JOIN. Apresente o nome do concelho e o número de escolas, e ordene pelo nome do concelho.
+    Selecione o nome do distrito e o numero de turmas.
 </p>
 
 <h2>Resolução</h2>
@@ -55,14 +55,7 @@ GROUP BY concelhos.cod;
     Tendo tudo isso em conta, eis a query na tua totalidade:
 </p>
 
-<pre><code class="language-sql">SELECT
-    concelhos.concelho,
-    COUNT(entidades.cod) as "Nº Escolas"
-FROM concelhos
-JOIN entidades ON entidades.concelho = concelhos.cod
-LEFT JOIN agrupamentos ON agrupamentos.cod = entidades.agrupamento
-WHERE agrupamentos.cod = NULL
-GROUP BY concelhos.cod;
+<pre><code class="language-sql">QUERY INTEIRA
 </code></pre>
 
 <p>
