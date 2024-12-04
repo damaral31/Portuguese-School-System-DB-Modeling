@@ -9,14 +9,7 @@ APP = Flask(__name__)
 # Start page
 @APP.route('/')
 def index():
-    stats = db.execute('''
-        SELECT * FROM
-            (SELECT COUNT(*) n_distritos FROM distritos)
-        JOIN
-            (SELECT COUNT(*) n_concelhos FROM concelhos)
-    ''').fetchone()
-
-    return render_template('index.html',stats=stats)
+    return render_template('index.html')
 
 
 
