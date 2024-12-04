@@ -25,7 +25,7 @@
 
 <pre><code class="language-sql">SELECT
 concelhos.concelho,
-COUNT(entidades.escola)
+COUNT(escolas.escola)
 </code></pre>
 
 <p>
@@ -33,8 +33,8 @@ COUNT(entidades.escola)
 </p>
 
 <pre><code class="language-sql">FROM concelhos
-JOIN entidades ON entidades.concelho = concelhos.cod
-LEFT JOIN agrupamentos ON agrupamentos.cod = entidades.agrupamento
+JOIN escolas ON escolas.concelho = concelhos.cod
+LEFT JOIN agrupamentos ON agrupamentos.cod = escolas.agrupamento
 </code></pre>
 
 <p>
@@ -59,8 +59,8 @@ GROUP BY concelhos.cod;
     concelhos.concelho,
     COUNT(entidades.cod) as "Nº Escolas"
 FROM concelhos
-JOIN entidades ON entidades.concelho = concelhos.cod
-LEFT JOIN agrupamentos ON agrupamentos.cod = entidades.agrupamento
+JOIN escolas ON escolas.concelho = concelhos.cod
+LEFT JOIN agrupamentos ON agrupamentos.cod = escolas.agrupamento
 WHERE agrupamentos.cod = NULL
 GROUP BY concelhos.cod;
 </code></pre>
