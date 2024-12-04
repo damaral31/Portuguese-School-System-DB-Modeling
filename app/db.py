@@ -5,7 +5,7 @@ import re
 global DB, DB_FILE
 
 # TODO change this to your database file
-DB_FILE = 'Recintos.db'
+DB_FILE = 'AlunosMatriculados.db'
 
 DB = dict()
 
