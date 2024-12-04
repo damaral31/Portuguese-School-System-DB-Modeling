@@ -1,0 +1,14 @@
+<!doctype html>
+<title>Flask application</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-sql.min.js"></script>
+
+<nav>
+  <a href="/">Home</a>
+</nav>
+<section class="content">
+  {% block content %}{% endblock %}
+</section>
