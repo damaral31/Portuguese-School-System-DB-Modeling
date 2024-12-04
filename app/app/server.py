@@ -1,4 +1,4 @@
-#! /usr/bin/python3
+
 import logging
 from app import APP
 import db
