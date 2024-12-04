@@ -75,6 +75,9 @@ def listar_concelhos():
                              """).fetchall()
     return render_template('concelhos.html', concelhos=concelhos)
     
+@APP.route('/perguntas/02')
+def explicacao():
+    return render_template('Resposta_2.html')
 
 
 

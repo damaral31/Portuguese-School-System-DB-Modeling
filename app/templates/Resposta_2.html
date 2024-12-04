@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Resposta 2</h1> 
+
+<p>Quais os cursos  que um aluno do Porto ou Lisboa pode frequentar?
+     Ordene por distrito e por curso.</p>
+
+
+
+<p>Resposta dada</p>
+    <pre><code class="language-sql">SELECT DISTINCT
+Distritos.distrito AS Distrito,
+    Turmas.natureza AS Curso
+FROM
+    Turmas
+JOIN
+    Entidades ON Turmas.entidade = Entidades.cod
+JOIN
+    Concelhos ON Entidades.concelho = Concelhos.cod
+JOIN
+    Distritos ON Concelhos.distrito = Distritos.cod
+WHERE
+    distritos.distrito IN ('Porto', 'Lisboa')
+ORDER BY
+    Distrito ASC,
+    Curso ASC;
+</code></pre>
+<p> Explicacao</p>
+<p>Para obter os cursos que um aluno do Porto ou Lisboa pode frequentar,
+     é necessário fazer um <b>JOIN</b> entre as tabelas Turmas, Entidades, Concelhos e Distritos.
+     A condição de seleção é que o distrito seja Porto ou Lisboa. A ordenação é feita por distrito e por curso.</p>
+
+<p>Resultado</p>
+
+{% endblock %}
+    

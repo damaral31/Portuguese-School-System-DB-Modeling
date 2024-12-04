@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Resposta 2</h1> 
+
+<p>Quais os cursos  que um aluno do Porto ou Lisboa pode frequentar?
+     Ordene por distrito e por curso.</p>
+
+
+
+<p>Resposta dada</p>
+    <pre><code class="language-sql">SELECT
+    Concelhos.concelho AS "Nome do Concelho",
+    Entidades.escola AS "Escola",
+    COUNT(Turmas.cod) AS "Nº de turmas"
+FROM
+    Turmas
+JOIN
+    Entidades ON Turmas.entidade = Entidades.cod
+JOIN
+    Concelhos ON Entidades.concelho = Concelhos.cod
+WHERE
+    Turmas.oferta LIKE '%S3%' -- Filtra turmas com "S3" na oferta
+GROUP BY
+    Concelhos.concelho, Entidades.escola -- Agrupa por concelho e escola
+ORDER BY
+    "Nº de turmas" DESC, -- Ordena por número de turmas em ordem descendente
+    Concelhos.concelho ASC; -- Ordena por nome do concelho em ordem alfabética
+</code></pre>
+<p> Explicacao</p>
+<p> Para obter o número de turmas com oferta "S3" por concelho e escola, é necessário fazer um JOIN entre as tabelas Turmas, Entidades e Concelhos.
+    A condição de seleção é que a oferta da turma contenha "S3" usando LIKE. Os resultados são agrupados por concelho e escola,
+    e ordenados pelo número de turmas em ordem descendente e pelo nome do concelho em ordem alfabética.</p>
+
+<p>Resultado</p>
+
+{% endblock %}
+    
