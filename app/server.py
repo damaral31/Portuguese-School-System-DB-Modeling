@@ -1,4 +1,3 @@
-
 import logging
 from app import APP
 import db
@@ -9,4 +8,3 @@ if __name__ == '__main__':
                     datefmt='%Y-%m-%d %H:%M:%S')
   db.connect()
   APP.run(host='0.0.0.0', port=9000)
-
