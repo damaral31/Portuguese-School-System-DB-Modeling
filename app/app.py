@@ -28,11 +28,11 @@ def funcoes_de_agragacao():
 @APP.route('/explicacao/Case_explicacao')
 def case():
     return render_template('Cases_explicacao.html')
-    
+
 @APP.route('/perguntas/02')
 def explicacao():
     return render_template('Resposta_2.html')
-  
+
 @APP.route('/explicacao/ORDER_BY')
 def orderby():
     return render_template('explicacaoORDERBY.html')
