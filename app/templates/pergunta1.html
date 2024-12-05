@@ -8,7 +8,7 @@
 </p>
 
 <h2>Enunciado</h2>
-<p>
+<p style= "font-size: 20px">
     <b>Em cada concelho, quantas escolas que NÃO pertencem a um agrupamento existem?</b>
     <br><br>
     <u>Utilize vários tipos de JOIN.</u> Apresente o nome do concelho e o número de escolas, e ordene pelo nome do concelho.
@@ -48,7 +48,7 @@ GROUP BY concelhos.cod;
 </code></pre>
 
 <p>
-    Procuramos nesta query por <code class="language-sql">NULL</code> pois, nas linhas em não existe correspondência para alguma coluna, tal coluna será preenchida com <code style='language-sql'>NULL</code>. Ou seja, em termos leigos, entidades sem agrupamento têm a coluna <code style='language-sql'>agrupamentos.cod = NULL</code>.
+    Procuramos nesta query por <code class="language-sql">NULL</code> pois, nas linhas em não existe correspondência para alguma coluna, tal coluna será preenchida com <code class='language-sql'>NULL</code>. Ou seja, em termos leigos, entidades sem agrupamento têm a coluna <code style='language-sql'>agrupamentos.cod = NULL</code>.
     <br><br>
     Em último lugar, ordenamos a tabela alfabeticamente pelos nomes dos concelhos.cod
     <br><br>
