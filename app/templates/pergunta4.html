@@ -33,14 +33,18 @@
 <pre><code class="language-sql">--Já dentro da subquery
 SELECT
     distritos.distrito as distrito,
-    COUNT(turmas.cod) as num
+    count(turmas.cod) as num
 FROM distritos
 JOIN concelhos ON concelhos.distrito = distritos.cod
-JOIN entidades ON entidades.concelho = concelhos.cod
-JOIN turmas ON turmas.entidade = entidades.cod
+JOIN escolas ON escolas.concelho = concelhos.cod
+JOIN entidadesEscola ee ON ee.concelho= concelhos.cod
+JOIN turmas ON turmas.escola = escolas.cod
+JOIN turmas ON turmas.entidadeEscola = entidadesEscola.cod
 </code></pre>
 
 <p>
+    <b>ATENÇÃO:</b> Vale notar que a tabela turmas é junta duas vezes. Isto porque algumas turmas pertencem a <code class="language-sql">Escolas</code>, ao passo que outras pertencem a <code class="language-sql">EntidadesEscola</code>.
+    <br><br>
     Mas como queremos as turmas de secundário (identificadas com nível <code class="language-sql">"Ensino Secundário"</code>):
 </p>
 
@@ -48,7 +52,7 @@ JOIN turmas ON turmas.entidade = entidades.cod
 </code></pre>
 
 <p>
-    E agrupando o <code class="language-sql">COUNT()</count> por distrito, fechamos a subquery:
+    E agrupando o <code class="language-sql">COUNT()</code> por distrito, fechamos a subquery:
 </p>
 
 <pre><code class="language-sql">GROUP BY distritos.cod
@@ -61,15 +65,17 @@ Tendo tudo isso em conta, eis a query na tua totalidade:
 
 <pre><code class="language-sql">SELECT
     distrito,
-    MIN(num) as Min
+    min(num) as max
 FROM(
     SELECT
         distritos.distrito as distrito,
-        COUNT(turmas.cod) as num
+        count(turmas.cod) as num
     FROM distritos
     JOIN concelhos ON concelhos.distrito = distritos.cod
-    JOIN entidades ON entidades.concelho = concelhos.cod
-    JOIN turmas ON turmas.entidade = entidades.cod
+    JOIN escolas ON escolas.concelho = concelhos.cod
+    JOIN entidadesEscola ee ON ee.concelho= concelhos.cod
+    JOIN turmas ON turmas.escola = escolas.cod
+    JOIN turmas ON turmas.entidadeEscola = entidadesEscola.cod
     WHERE turmas.nivel like "Ensino Secundário"
     GROUP BY distritos.cod
 );
