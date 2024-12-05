@@ -76,19 +76,61 @@ entidades = df[['CÓDICO DGEEC ENTIDADE', 'ENTIDADE']].drop_duplicates().values.
 cursor.execute("DELETE FROM ENTIDADES")
 for entidade in entidades:
     cursor.execute("INSERT INTO ENTIDADES (cod, entidade) VALUES (?, ?)", (entidade[0], entidade[1]))
-'''
+
 turmas = df[['CÓDIGO DGEEC ESCOLA', 'CÓDICO DGEEC ENTIDADE', 'NATUREZA', 'ORIENTAÇÃO', 'NÍVEL DE  ENSINO', 'OFERTA', 'TIPOLOGIA', 'ANO DE ESCOLARIDADE', 'CICLO DE ESTUDOS', 'ORGANIZAÇÃO','CURSO']].drop_duplicates().values.tolist()
 cursor.execute("DELETE FROM TURMAS")
 cod_turma = 1000
 for codigo_escola, codigo_entidade, natureza, orientacao, nivel, oferta, tipologia, ano, ciclo, organizacao,curso in turmas:
-    if pd.notnull(codigo_escola):
-        cursor.execute("INSERT INTO TURMAS (cod, escola, entidadeEscola, natureza, orientacao, nivel, oferta, tipologia, ano, ciclo, organizacao) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 
-                       (cod_turma, codigo_escola, None, natureza, orientacao, nivel, oferta, tipologia, ano, ciclo, organizacao,curso))
-    else:
-        cursor.execute("INSERT INTO TURMAS (cod, escola, entidadeEscola, natureza, orientacao, nivel, oferta, tipologia, ano, ciclo, organizacao) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 
-                       (cod_turma, None, codigo_entidade, natureza, orientacao, nivel, oferta, tipologia, ano, ciclo, organizacao,curso))
-        cod_turma += 1
+    cursor.execute("INSERT INTO TURMAS (cod, escola, entidadeEscola, natureza, orientacao, nivel, oferta, tipologia, ano, ciclo, organizacao,curso) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 
+    (cod_turma, codigo_escola, codigo_entidade, natureza, orientacao, nivel, oferta, tipologia, ano, ciclo, organizacao,curso))
+        
+    cod_turma += 1
 
+i = 0
+alunos = df[['CÓDIGO DGEEC ESCOLA', 'CÓDICO DGEEC ENTIDADE', 'NATUREZA', 'ORIENTAÇÃO', 'NÍVEL DE  ENSINO', 'OFERTA', 'TIPOLOGIA', 'ANO DE ESCOLARIDADE', 'CICLO DE ESTUDOS', 'ORGANIZAÇÃO', 'CURSO', 'SEXO', 'NÚMERO DE ALUNOS MATRICULADOS']].drop_duplicates().values.tolist()
+cursor.execute("DELETE FROM ALUNOS")
 
+for codigo_escola, codigo_entidade, natureza, orientacao, nivel, oferta, tipologia, ano, ciclo, organizacao, curso, sexo, alunos in alunos:
+    query = """
+    SELECT cod FROM TURMAS WHERE 
+    (escola IS NULL OR escola = ?) AND 
+    (entidadeEscola IS NULL OR entidadeEscola = ?) AND 
+    (natureza IS NULL OR natureza = ?) AND 
+    (orientacao IS NULL OR orientacao = ?) AND 
+    (nivel IS NULL OR nivel = ?) AND 
+    (oferta IS NULL OR oferta = ?) AND 
+    (tipologia IS NULL OR tipologia = ?) AND 
+    (ano IS NULL OR ano = ?) AND 
+    (ciclo IS NULL OR ciclo = ?) AND 
+    (organizacao IS NULL OR organizacao = ?) AND 
+    (curso IS NULL OR curso = ?)
+    """
+    cursor.execute(query, (
+        None if pd.isnull(codigo_escola) else codigo_escola,
+        None if pd.isnull(codigo_entidade) else codigo_entidade,
+        None if pd.isnull(natureza) else natureza,
+        None if pd.isnull(orientacao) else orientacao,
+        None if pd.isnull(nivel) else nivel,
+        None if pd.isnull(oferta) else oferta,
+        None if pd.isnull(tipologia) else tipologia,
+        None if pd.isnull(ano) else ano,
+        None if pd.isnull(ciclo) else ciclo,
+        None if pd.isnull(organizacao) else organizacao,
+        None if pd.isnull(curso) else curso
+    ))
+    turma_cod = cursor.fetchone()
+    if turma_cod:
+        turma_cod = turma_cod[0]
+        print(turma_cod, i)
+        cursor.execute("INSERT INTO ALUNOS (turma, sexo, quantidade) VALUES (?, ?, ?)", (turma_cod, sexo, alunos))
+        i += 1
+
+esntidadesescola = df[df['ESCOLA'].isnull()][[ 'CÓDICO DGEEC ENTIDADE', 'ENTIDADE', 'CONCELHO']].drop_duplicates().values.tolist()
+
+for entidade in esntidadesescola:
+    cursor.execute("select cod from concelhos where concelho = ?", (entidade[2],))
+    concelho_cod = cursor.fetchone()[0]
+    cursor.execute("INSERT INTO ENTIDADESescola (cod, entidade, concelho) VALUES (?, ?, ?)", (entidade[0], entidade[1], concelho_cod))
+'''
 conn.commit()
 conn.close()
