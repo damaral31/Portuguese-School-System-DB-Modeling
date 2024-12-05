@@ -11,7 +11,9 @@ APP = Flask(__name__)
 def index():
     return render_template('index.html')
 
-
+@APP.route('/explicacao/SELECT')
+def select():
+    return render_template('explicacaoSELECT.html')
 
 @APP.route('/explicacao/Where')
 def where():
