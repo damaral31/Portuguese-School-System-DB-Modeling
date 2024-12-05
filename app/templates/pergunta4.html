@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Pergunta 4</h1>
+<p>
+    <b>Tópicos:</b> select, tipos de join, order by, agregação dupla
+</p>
+
+<h2>Enunciado</h2>
+<p>
+    <b>Qual e o distrito com menos turmas de nivel de ensino secundario?</b>
+    <br><br>
+    Selecione o nome do distrito e o numero de turmas.
+</p>
+
+<h2>Resolução</h2>
+<p>
+    Começemos por selecionar as colunas pedidas acima:
+</p>
+
+<pre><code class="language-sql">SELECT
+    distrito,
+    MIN(num) as Min
+</code></pre>
+
+<p>
+    Mas como <code class="language-sql">MIN()</code> é uma função de agregação, é nos necessário criar o grupo ao qual se vai aplicar o filtro.
+    <br><br>
+    Tal grupo é, neste caso, a contagem de turmas de secundário por distrito. Assim faremos uma subquery de modo a obter essa tabela, começando por selecionar as colunas e juntar as tabelas necessárias:
+</p>
+
+<pre><code class="language-sql">--Já dentro da subquery
+SELECT
+    distritos.distrito as distrito,
+    COUNT(turmas.cod) as num
+FROM distritos
+JOIN concelhos ON concelhos.distrito = distritos.cod
+JOIN entidades ON entidades.concelho = concelhos.cod
+JOIN turmas ON turmas.entidade = entidades.cod
+</code></pre>
+
+<p>
+    Mas como queremos as turmas de secundário (identificadas com nível <code class="language-sql">"Ensino Secundário"</code>):
+</p>
+
+<pre><code class="language-sql">WHERE turmas.nivel like "Ensino Secundário"
+</code></pre>
+
+<p>
+    E agrupando o <code class="language-sql">COUNT()</count> por distrito, fechamos a subquery:
+</p>
+
+<pre><code class="language-sql">GROUP BY distritos.cod
+--Fim da subquery
+</code></pre>
+
+<p>
+Tendo tudo isso em conta, eis a query na tua totalidade:
+</p>
+
+<pre><code class="language-sql">SELECT
+    distrito,
+    MIN(num) as Min
+FROM(
+    SELECT
+        distritos.distrito as distrito,
+        COUNT(turmas.cod) as num
+    FROM distritos
+    JOIN concelhos ON concelhos.distrito = distritos.cod
+    JOIN entidades ON entidades.concelho = concelhos.cod
+    JOIN turmas ON turmas.entidade = entidades.cod
+    WHERE turmas.nivel like "Ensino Secundário"
+    GROUP BY distritos.cod
+);
+</code></pre>
+
+<p>
+    Que resulta na tabela:
+</p>
+
+<h1>INTRODUZIR TABELA DA PERGUNTA 4</h1>
+
+{% endblock %}

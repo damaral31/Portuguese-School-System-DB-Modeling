@@ -1,0 +1,68 @@
+{% extends 'base.html' %} {% block content %}
+
+<h1>CASE</h1>
+
+<p>
+    A expressão <b>CASE</b> é usada para criar condições condicionais,
+     permitindo retornar diferentes valores com base em critérios especificados. 
+    Funciona como uma estrutura if-else dentro de uma consulta.
+</p>
+
+<p>Por exemplo considere a tabela <b>nomes</b>:</p>
+
+<table>
+  <tr>
+    <th>Nome</th>
+    <th>Idade</th>
+  </tr>
+  <tr>
+    <td>Afonso</td>
+    <td>25</td>
+  </tr>
+  <tr>
+    <td>Miguel</td>
+    <td>30</td>
+  </tr>
+  <tr>
+    <td>Diogo</td>
+    <td>20</td>
+  </tr>
+</table>
+
+<p>Eis a seguinte query :</p>
+
+<pre><code class="language-sql">SELECT nome
+CASE
+    WHEN idade > 25 THEN 'Velho'
+    WHEN idade < 25 THEN 'Novo'
+    ELSE 'Idade igual a 25'
+END AS 'Classificação'
+</code></pre>
+
+<p>Output:</p>
+<p>
+    Vai ser criada uma nova coluna chamada <b>Classificação</b> que vai conter
+    os valores 'Velho', 'Novo' ou 'Idade igual a 25' com base na idade de cada
+    linha.
+</p>
+
+<table>
+  <tr>
+    <th>Nome</th>
+    <th>Classificação</th>
+  </tr>
+  <tr>
+    <td>Afonso</td>
+    <td>Idade igual a 25</td>
+  </tr>
+  <tr>
+    <td>Miguel</td>
+    <td>Velho</td>
+  </tr>
+  <tr>
+    <td>Diogo</td>
+    <td>Novo</td>
+  </tr>
+</table>
+
+{% endblock %}

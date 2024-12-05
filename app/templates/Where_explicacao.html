@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Where</h1> 
+
+<p>A função WHERE em SQL é usada para filtrar registros de uma tabela com base em condições especificadas.
+     Ela determina quais linhas devem ser incluídas no resultado de uma consulta.</p>
+
+<p>Por exemplo considere a tabela <b>nomes</b></p>
+
+<table>
+    <tr>
+        <th>Nome</th>
+        <th>Idade</th>
+    </tr>
+    <tr>
+        <td>João</td>
+        <td>25</td>
+    </tr>
+    <tr>
+        <td>Maria</td>
+        <td>30</td>
+    </tr>
+    <tr>
+        <td>Carlos</td>
+        <td>20</td>
+    </tr>
+</table>
+<p>Eis a seguinte query :</p>
+    <pre><code class="language-sql">
+        SELECT * 
+        FROM tabela 
+        WHERE idade >= 25;
+        </code></pre>
+
+        <p>Output </p>
+        <table>
+            <tr>
+                <th>Nome</th>
+                <th>Idade</th>
+            </tr>
+            <tr>
+                <td>João</td>
+                <td>25</td>
+            </tr>
+            <tr>
+                <td>Maria</td>
+                <td>30</td>
+            </tr>
+        </table>
+
+{% endblock %}
+    
