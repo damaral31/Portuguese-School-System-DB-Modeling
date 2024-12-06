@@ -161,3 +161,39 @@ def pergunta7():
     ORDER BY rank;
     ''').fetchall()
     return render_template('pergunta7.html', resposta=resposta)
+
+@APP.route('/distritos/')
+def listar_distritos():
+    distritos = db.execute('''
+        SELECT distritos.cod, distritos.distrito, COUNT(*) num_concelhos
+        FROM distritos 
+        JOIN concelhos ON concelhos.distrito = distritos.cod
+        GROUP BY distritos.cod
+        ORDER BY distritos.cod
+    ''').fetchall()
+    return render_template('listar_distritos.html', distritos=distritos)
+
+@APP.route('/concelhos/')
+def listar_concelhos():
+    concelhos = db.execute('''
+        SELECT concelhos.cod, concelhos.concelho, COUNT(*) num_escolas, distritos.distrito
+        FROM concelhos
+        JOIN distritos ON distritos.cod = concelhos.distrito
+        JOIN escolas ON escolas.concelho = concelhos.cod
+        GROUP BY concelhos.cod
+        ORDER BY concelhos.cod
+    ''').fetchall()
+    return render_template('listar_concelhos.html', concelhos=concelhos)
+
+@APP.route('/escolas/')
+def listar_escolas():
+    escolas = db.execute('''
+        SELECT escolas.cod, escolas.escola, count() as num_turmas, concelhos.concelho
+        FROM escolas
+        JOIN concelhos ON concelhos.cod = escolas.concelho
+        JOIN distritos ON distritos.cod = concelhos.distrito
+        JOIN turmas ON turmas.escola = escolas.cod
+        GROUP BY escolas.cod
+        ORDER BY escolas.cod
+    ''').fetchall()
+    return render_template('listar_escolas.html', escolas=escolas)
