@@ -43,7 +43,7 @@ LEFT JOIN agrupamentos ON agrupamentos.cod = escolas.agrupamento
     Podemos finalmente filtrar as escolas e ordenar corretamente o resultado:
 </p>
 
-<pre><code class="language-sql">WHERE agrupamentos.cod = NULL
+<pre><code class="language-sql">WHERE agrupamentos.cod IS NULL
 GROUP BY concelhos.cod;
 </code></pre>
 
@@ -61,14 +61,23 @@ GROUP BY concelhos.cod;
 FROM concelhos
 JOIN escolas ON escolas.concelho = concelhos.cod
 LEFT JOIN agrupamentos ON agrupamentos.cod = escolas.agrupamento
-WHERE agrupamentos.cod = NULL
+WHERE agrupamentos.cod IS NULL
 GROUP BY concelhos.cod;
 </code></pre>
 
-<p>
-    Que resulta na tabela:
-</p>
+<h2>Resultado</h2>
 
-<h1>INTRODUZIR TABELA DA PERGUNTA 1</h1>
+<table>
+    <tr>
+        <th>Concelho</th>
+        <th>Nº Escolas</th>
+    </tr>
+    {% for linha in resposta %}
+    <tr>
+        <td>{{ linha.concelho }}</td>
+        <td>{{ linha.num }}</td>
+    </tr>
+    {% endfor %}
+</table>
 
 {% endblock %}
