@@ -63,6 +63,10 @@ def pergunta2():
 def pergunta4():
     return render_template('pergunta4.html')
 
+@APP.route('/pergunta/5')
+def pergunta5():
+    return render_template('pergunta5.html')
+
 @APP.route('/pergunta/7')
 def pergunta7():
     return render_template('pergunta7.html')
