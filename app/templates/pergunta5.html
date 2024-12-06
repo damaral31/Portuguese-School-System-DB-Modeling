@@ -70,10 +70,21 @@ ORDER BY
     c.concelho ASC;
 </code></pre>
 
-<p>
-    Que resulta na tabela:
-</p>
+<h2>Resultado</h2>
 
-<h1>INTRODUZIR TABELA DA PERGUNTA 5</h1>
+<table>
+    <tr>
+        <th>Concelho</th>
+        <th>Escola</th>
+        <th>Número de Turmas</th>
+    </tr>
+    {% for row in resposta %}
+    <tr>
+        <td>{{ row.concelho }}</td>
+        <td>{{ row.escola }}</td>
+        <td>{{ row.num }}</td>
+    </tr>
+    {% endfor %}
+</table>
 
 {% endblock %}
