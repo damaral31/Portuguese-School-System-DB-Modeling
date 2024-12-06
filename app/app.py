@@ -15,9 +15,13 @@ def index():
 def select():
     return render_template('explicacaoSELECT.html')
 
-@APP.route('/explicacao/Where')
+@APP.route('/explicacao/WHERE')
 def where():
     return render_template('Where_explicacao.html')
+
+@APP.route('/explicacao/LIKE')
+def like():
+    return render_template('explicacaoLIKE.html')
 
 @APP.route('/explicacao/Conjuntos')
 def conjuntos():

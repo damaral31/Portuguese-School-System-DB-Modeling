@@ -4,71 +4,110 @@
 
 <h1>Pergunta 7</h1>
 <p>
-    <b>Tópicos:</b> select, tipos de join, order by, funções de agregação
+    <b>Tópicos:</b> select, join, order by, row_number
 </p>
 
 <h2>Enunciado</h2>
 <p>
-    <b>Em cada concelho, quantas escolas que NÃO pertencem a um agrupamento existem?</b>
+    <b>Quais os 5 distritos com menor numero de raparigas por turma em media?</b>
     <br><br>
-    <u>Utilize vários tipos de JOIN.</u> Apresente o nome do concelho e o número de escolas, e ordene pelo nome do concelho.
+    <u>Considere apenas turmas pertencentes a escolas.</u> Ordene do menor numero de raparigas para o maior.
 </p>
 
 <h2>Resolução</h2>
+
 <p>
-    Começemos por compreender quais as colunas pedidas no enunciado.
+    Tomemos uma metodologia diferente à das questões usuais; não começamos por tratar de preencher o <code class="language-sql">SELECT</code>. Em vez disso, listemos o que precisamos de saber para responder à pergunta:
+    <ul>
+        <li>O número médio de raparigas por turma em cada distrito.</li>
+        <li>Os distritos ordenados pelo número médio de raparigas por turma.</li>
+        <li>Os 5 distritos com o menor número médio de raparigas por turma.</li>
+    </ul>
+    <br>
+    Assim, utilizando a palavra <code class="language-sql">WITH</code>, criemos 2 tabelas auxiliares (<b>MediaRaparigasPorDistrito</b> e <b>DistritosOrdenados</b>) que satisfaçam o primeiro e o segundo ponto, respetivamente:
+</p>
+
+<p>
+    <b>ATENÇÃO:</b> Utilizando <code>ROW_NUMBER() OVER</code>, atribuimos um número sequencial único a cada linha dentro de uma partição de um conjunto de resultados. Esta numeração é baseada na ordem especificada na cláusula <code>ORDER BY</code> dentro da expressão <code>OVER</code>.
     <br><br>
-    Ora, pelo enunciado quer-se não só o nome dos concelhos que satisfazem a condição (<code class="language-sql">concelhos.concelho</code>), mas também a contagem das escolas não pertencentes a agrupamentos, isto é, um <code class="language-sql">COUNT(entidades.escola)</code>.
-    <br><br>
-    Então:
+    Ou seja, a função <code>ROW_NUMBER()</code> atribui um número de linha a cada registro, ordenando-os pela coluna <code>quantidade</code>. Tal tem como propósito identificar a posição de cada linha dentro do conjunto de resultados.
+</p>
+
+<pre><code class="language-sql">WITH MediaRaparigasPorDistrito AS (
+    SELECT
+            d.distrito,
+            AVG(a.quantidade) AS media_raparigas
+        FROM distritos d
+        JOIN concelhos c ON d.cod = c.distrito
+        JOIN escolas e ON c.cod = e.concelho
+        JOIN turmas t ON e.cod = t.escola
+        JOIN alunos a ON t.cod = a.turma
+        WHERE a.sexo = 'Mulheres'
+        GROUP BY d.distrito
+),
+DistritosOrdenados AS (
+    SELECT
+        distrito,
+        media_raparigas,
+        ROW_NUMBER() OVER (ORDER BY media_raparigas ASC) AS rank  --Utilização de ROW_NUMBER() para
+    FROM MediaRaparigasPorDistrito                                --evidenciar a ordem
+)
+</code></pre>
+
+<p>
+    De seguida, feitas estas tabelas, podemos selecionar as colunas relevantes à questão em mãos:    
 </p>
 
 <pre><code class="language-sql">SELECT
-    concelhos.concelho,
-    COUNT(escolas.cod) as "Nº Escolas"
+    distrito AS Distrito,
+    media_raparigas AS "Média de Raparigas"
 </code></pre>
 
 <p>
-    Cabe-nos agora operar sobre as diversas tabelas de modo a obter a infomação desejada. Para isso vamos primeiro juntar as tabelas necessárias:
-</p>
-
-<pre><code class="language-sql">FROM concelhos
-JOIN escolas ON escolas.concelho = concelhos.cod
-LEFT JOIN agrupamentos ON agrupamentos.cod = escolas.agrupamento
-</code></pre>
-
-<p>
-    <b>ATENÇÃO:</b> Note que, para juntar a tabela <code class="language-sql">Agrupamentos</code> utilizamos um <b>LEFT JOIN</b>. Isto porque, ao priorizar a tabela da esquerda, incluimos também no resultado as entidades sem correspondência em <code class="language-sql">Agrupamentos</code>.
+    Mas queremos apenas os <b>5</b> distritos com menos raparigas.
     <br><br>
-    Podemos finalmente filtrar as escolas e ordenar corretamente o resultado:
+    Ora, como a tabela <code class="language-sql">DistritosOrdenados</code> tem os rankings de cada distrito, em que <code class="language-sql">RANK = 1</code> é o distrito com menos raparigas, basta  
 </p>
 
-<pre><code class="language-sql">WHERE agrupamentos.cod = NULL
-GROUP BY concelhos.cod;
+<pre><code class="language-sql">FROM DistritosOrdenados
+WHERE rank <= 5
+ORDER BY rank;
 </code></pre>
 
 <p>
-    Procuramos nesta query por <code class="language-sql">NULL</code> pois, nas linhas em não existe correspondência para alguma coluna, tal coluna será preenchida com <code style='language-sql'>NULL</code>. Ou seja, em termos leigos, entidades sem agrupamento têm a coluna <code style='language-sql'>agrupamentos.cod = NULL</code>.
-    <br><br>
-    Em último lugar, ordenamos a tabela alfabeticamente pelos nomes dos concelhos.cod
-    <br><br>
-    Tendo tudo isso em conta, eis a query na tua totalidade:
+    Logo, fica a query na sua totalidade:
 </p>
 
-<pre><code class="language-sql">SELECT
-    concelhos.concelho,
-    COUNT(escolas.cod) as "Nº Escolas"
-FROM concelhos
-JOIN escolas ON escolas.concelho = concelhos.cod
-LEFT JOIN agrupamentos ON agrupamentos.cod = escolas.agrupamento
-WHERE agrupamentos.cod = NULL
-GROUP BY concelhos.cod;
+<pre><code class="language-sql">WITH MediaRaparigasPorDistrito AS (
+    SELECT
+            d.distrito,
+            AVG(a.quantidade) AS media_raparigas
+        FROM distritos d
+        JOIN concelhos c ON d.cod = c.distrito
+        JOIN escolas e ON c.cod = e.concelho
+        JOIN turmas t ON e.cod = t.escola
+        JOIN alunos a ON t.cod = a.turma
+        WHERE a.sexo = 'Mulheres'
+        GROUP BY d.distrito
+),
+DistritosOrdenados AS (
+    SELECT
+        distrito,
+        media_raparigas,
+        ROW_NUMBER() OVER (ORDER BY media_raparigas ASC) AS rank  --Utilização de ROW_NUMBER() para
+    FROM MediaRaparigasPorDistrito                                --evidenciar a ordem
+)
+
+SELECT
+    distrito AS Distrito,
+    media_raparigas AS "Média de Raparigas"
+FROM DistritosOrdenados
+WHERE rank <= 5
+ORDER BY rank;
 </code></pre>
 
 <p>
-    Que resulta na tabela:
+    <b>NOTA:</b> Claro está que esta pergunta poderia ter sido respondida também utilizando <code class="language-sql">LIMIT 5</code>, eliminando a necessidade de criar uma coluna <code class="language-sql">RANK</code>. No entanto, o propósito aqui é precisamente mostrar um possível caso em que <code class="language-sql">ROW_NUMBER()</code> seria útil.
 </p>
-
-<h1>INTRODUZIR TABELA DA PERGUNTA 1</h1>
 
 {% endblock %}
