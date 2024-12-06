@@ -35,10 +35,6 @@ def funcoes_de_agragacao():
 def case():
     return render_template('Cases_explicacao.html')
 
-@APP.route('/perguntas/02')
-def explicacao():
-    return render_template('Resposta_2.html')
-
 @APP.route('/explicacao/ORDER_BY')
 def orderby():
     return render_template('explicacaoORDERBY.html')
@@ -58,6 +54,10 @@ def rowNumber():
 @APP.route('/pergunta/1')
 def pergunta1():
     return render_template('pergunta1.html')
+
+@APP.route('/pergunta/2')
+def pergunta2():
+    return render_template('pergunta2.html')
 
 @APP.route('/pergunta/4')
 def pergunta4():
