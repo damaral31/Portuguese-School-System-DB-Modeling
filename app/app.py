@@ -53,10 +53,42 @@ def rowNumber():
 
 @APP.route('/pergunta/1')
 def pergunta1():
-    return render_template('pergunta1.html')
+    resposta = db.execute('''
+    SELECT
+        concelhos.concelho as concelho,
+        COUNT(escolas.cod) as num
+    FROM concelhos
+    JOIN escolas ON escolas.concelho = concelhos.cod
+    LEFT JOIN agrupamentos ON agrupamentos.cod = escolas.agrupamento
+    WHERE agrupamentos.cod IS NULL
+    GROUP BY concelhos.cod;
+    ''').fetchall()
+    return render_template('pergunta1.html', resposta=resposta)
 
 @APP.route('/pergunta/2')
 def pergunta2():
+    resposta = db.execute('''
+    SELECT
+        d.distrito AS Distrito,
+        t.oferta AS Curso
+    FROM Alunos a
+    JOIN Turmas t ON a.turma = t.cod
+    JOIN Escolas e ON t.escola = e.cod
+    JOIN Concelhos c ON e.concelho = c.cod
+    JOIN Distritos d ON c.distrito = d.cod
+
+     -- Relacionar com EntidadesEscola
+    LEFT JOIN EntidadesEscola ee ON t.entidadeEscola = ee.cod
+    LEFT JOIN Concelhos cee ON ee.concelho = cee.cod
+    LEFT JOIN Distritos dee ON cee.distrito = dee.cod
+    WHERE(
+        d.distrito IN ('Porto', 'Lisboa')
+        OR dee.distrito IN ('Porto', 'Lisboa')
+    )
+        AND t.oferta NOT NULL
+    GROUP BY d.distrito, t.oferta
+    ORDER BY d.distrito ASC, t.oferta ASC;
+    ''').fetchall()
     return render_template('pergunta2.html')
 
 @APP.route('/pergunta/4')
