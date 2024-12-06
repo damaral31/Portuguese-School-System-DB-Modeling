@@ -11,11 +11,17 @@ APP = Flask(__name__)
 def index():
     return render_template('index.html')
 
+@APP.route('/explicacao/SELECT')
+def select():
+    return render_template('explicacaoSELECT.html')
 
-
-@APP.route('/explicacao/Where')
+@APP.route('/explicacao/WHERE')
 def where():
     return render_template('Where_explicacao.html')
+
+@APP.route('/explicacao/LIKE')
+def like():
+    return render_template('explicacaoLIKE.html')
 
 @APP.route('/explicacao/Conjuntos')
 def conjuntos():
@@ -28,10 +34,6 @@ def funcoes_de_agragacao():
 @APP.route('/explicacao/Case_explicacao')
 def case():
     return render_template('Cases_explicacao.html')
-
-@APP.route('/perguntas/02')
-def explicacao():
-    return render_template('Resposta_2.html')
 
 @APP.route('/explicacao/ORDER_BY')
 def orderby():
@@ -51,11 +53,51 @@ def rowNumber():
 
 @APP.route('/pergunta/1')
 def pergunta1():
-    return render_template('pergunta1.html')
+    resposta = db.execute('''
+    SELECT
+        concelhos.concelho as concelho,
+        COUNT(escolas.cod) as num
+    FROM concelhos
+    JOIN escolas ON escolas.concelho = concelhos.cod
+    LEFT JOIN agrupamentos ON agrupamentos.cod = escolas.agrupamento
+    WHERE agrupamentos.cod IS NULL
+    GROUP BY concelhos.cod;
+    ''').fetchall()
+    return render_template('pergunta1.html', resposta=resposta)
+
+@APP.route('/pergunta/2')
+def pergunta2():
+    resposta = db.execute('''
+    SELECT
+        d.distrito AS Distrito,
+        t.oferta AS Curso
+    FROM Alunos a
+    JOIN Turmas t ON a.turma = t.cod
+    JOIN Escolas e ON t.escola = e.cod
+    JOIN Concelhos c ON e.concelho = c.cod
+    JOIN Distritos d ON c.distrito = d.cod
+
+     -- Relacionar com EntidadesEscola
+    LEFT JOIN EntidadesEscola ee ON t.entidadeEscola = ee.cod
+    LEFT JOIN Concelhos cee ON ee.concelho = cee.cod
+    LEFT JOIN Distritos dee ON cee.distrito = dee.cod
+    WHERE(
+        d.distrito IN ('Porto', 'Lisboa')
+        OR dee.distrito IN ('Porto', 'Lisboa')
+    )
+        AND t.oferta NOT NULL
+    GROUP BY d.distrito, t.oferta
+    ORDER BY d.distrito ASC, t.oferta ASC;
+    ''').fetchall()
+    return render_template('pergunta2.html')
 
 @APP.route('/pergunta/4')
 def pergunta4():
     return render_template('pergunta4.html')
+
+@APP.route('/pergunta/5')
+def pergunta5():
+    return render_template('pergunta5.html')
 
 @APP.route('/pergunta/7')
 def pergunta7():

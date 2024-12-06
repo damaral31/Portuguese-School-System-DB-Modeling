@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Pergunta 2</h1>
+<p>
+    <b>Tópicos:</b> select distinct, where, order by
+</p>
+
+<h2>Enunciado</h2>
+<p>
+    <b>Quais os cursos que um aluno do Porto ou Lisboa pode frequentar?</b>
+    <br>
+    Ordene por distrito e por curso.
+</p>
+
+
+
+<h2>Resolução</h2>
+<p>
+    Comecemos por selecionar as colunas desejadas e juntar tabelas relevantes: 
+</p>
+
+<pre><code class="language-sql">SELECT
+    d.distrito AS Distrito,
+    t.oferta AS Curso
+FROM Alunos a
+JOIN Turmas t ON a.turma = t.cod
+JOIN Escolas e ON t.escola = e.cod
+JOIN Concelhos c ON e.concelho = c.cod
+JOIN Distritos d ON c.distrito = d.cod
+</code></pre>
+
+<p>
+    No entanto, é aqui que precisamos de atentar numa peculiaridade desta Base de Dados:
+    <br><br>
+    Apesar da maioria das turmas pertencerem a uma escola e essa escola corresponder a uma entidade, tal não é o caso para algumas. Essas turmas não estão associadas a uma escola, pertencendo diretamente a uma entidade. Chamamos a essas entidades <b>Entidades Escola</b> e estão registadas na tabela <code class="language-sql">EntidadesEscola</code>.
+    <br><br>
+    Assim, necessitamos de juntar também essa tabela e agregar-lhe os seus distritos e concelhos:
+</p>
+
+<pre><code class="language-sql">-- Relacionar com EntidadesEscola
+LEFT JOIN EntidadesEscola ee ON t.entidadeEscola = ee.cod
+LEFT JOIN Concelhos cee ON ee.concelho = cee.cod
+LEFT JOIN Distritos dee ON cee.distrito = dee.cod
+</code></pre>
+
+<p>
+    Finalmente, aplicamos os filtros desejados, ou seja, cursos não nulos no Porto e Lisboa:
+</p>
+
+<pre><code class="language-sql">WHERE(
+    d.distrito IN ('Porto', 'Lisboa')
+    OR dee.distrito IN ('Porto', 'Lisboa')
+)
+    AND t.oferta NOT NULL
+</code></pre>
+
+<p>
+    E agrupamos por par distrito-oferta, ordenando os resultados como indicado:
+</p>
+
+<pre><code class="language-sql">GROUP BY d.distrito, t.oferta
+ORDER BY d.distrito ASC, t.oferta ASC;
+</code></pre>
+
+<p>
+    Obtemos portanto a query na sua totalidade:
+</p>
+
+<!--Query Inteira-->
+<pre><code class="language-sql">SELECT
+    d.distrito AS Distrito,
+    t.oferta AS Curso
+FROM Alunos a
+JOIN Turmas t ON a.turma = t.cod
+JOIN Escolas e ON t.escola = e.cod
+JOIN Concelhos c ON e.concelho = c.cod
+JOIN Distritos d ON c.distrito = d.cod
+
+ -- Relacionar com EntidadesEscola
+LEFT JOIN EntidadesEscola ee ON t.entidadeEscola = ee.cod
+LEFT JOIN Concelhos cee ON ee.concelho = cee.cod
+LEFT JOIN Distritos dee ON cee.distrito = dee.cod
+WHERE(
+    d.distrito IN ('Porto', 'Lisboa')
+    OR dee.distrito IN ('Porto', 'Lisboa')
+)
+    AND t.oferta NOT NULL
+GROUP BY d.distrito, t.oferta
+ORDER BY d.distrito ASC, t.oferta ASC;
+</code></pre>
+
+
+<h2>Resultado</h2>
+
+
+
+{% endblock %}
+    
