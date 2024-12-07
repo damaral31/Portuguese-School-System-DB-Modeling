@@ -50,6 +50,10 @@ def agregacaoDupla():
 @APP.route('/explicacao/ROW_NUMBER')
 def rowNumber():
     return render_template('explicacaoRowNumber.html')
+  
+@APP.route('/explicacao/Subquery_Variavel')
+def subqueryVariavel():
+    return render_template('explicacaoSubqueryVariavel.html')
 
 @APP.route('/pergunta/1')
 def pergunta1():
@@ -132,6 +136,24 @@ def pergunta4():
 @APP.route('/pergunta/5')
 def pergunta5():
     return render_template('pergunta5.html')
+
+@APP.route('/pergunta/6')
+def pergunta6():
+    resposta = db.execute('''
+SELECT
+concelhos.concelho as concelho,
+agrupamentos.agrupamento as agrupamento
+FROM agrupamentos
+JOIN escolas ON escolas.agrupamento = agrupamentos.cod
+JOIN concelhos ON concelhos.cod = escolas.concelho
+JOIN turmas ON turmas.escola = escolas.cod
+WHERE turmas.natureza = 'Público' AND turmas.tipologia = 'EB'
+GROUP BY concelhos.concelho, agrupamentos.agrupamento
+HAVING COUNT(escolas.cod) > 4
+ORDER BY
+concelhos.concelho,
+agrupamentos.agrupamento''').fetchall()
+    return render_template('pergunta6.html', resposta=resposta)
 
 @APP.route('/pergunta/6')
 def pergunta6():
