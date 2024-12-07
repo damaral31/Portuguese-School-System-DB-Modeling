@@ -50,6 +50,10 @@ def agregacaoDupla():
 @APP.route('/explicacao/ROW_NUMBER')
 def rowNumber():
     return render_template('explicacaoRowNumber.html')
+  
+@APP.route('/explicacao/Subquery_Variavel')
+def subqueryVariavel():
+    return render_template('explicacaoSubqueryVariavel.html')
 
 @APP.route('/pergunta/1')
 def pergunta1():
