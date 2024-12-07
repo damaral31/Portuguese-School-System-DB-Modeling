@@ -31,7 +31,7 @@ def conjuntos():
 def funcoes_de_agragacao():
     return render_template('Funcoes_de_agregacoes.html')
 
-@APP.route('/explicacao/Case_explicacao')
+@APP.route('/explicacao/Case')
 def case():
     return render_template('Cases_explicacao.html')
 
@@ -109,24 +109,6 @@ WHERE
     NUTS_II.NUTII NOT IN ('Centro', 'Alentejo');''').fetchall()
     return render_template('pergunta3.html', resposta=resposta)
 
-@APP.route('/pergunta/3')
-def pergunta3():
-    resposta = db.execute('''SELECT
- escolas.escola AS NomeEscola
-FROM
-    escolas
-JOIN
-    agrupamentos ON escolas.cod = agrupamentos.codSede
-JOIN
-    concelhos ON escolas.concelho = concelhos.cod
-JOIN
-    NUTS_III ON concelhos.NUTSIII = NUTS_III.cod
-JOIN
-    NUTS_II ON NUTS_III.NUTII = NUTS_II.cod
-WHERE
-    NUTS_II.NUTII NOT IN ('Centro', 'Alentejo');''').fetchall()
-    return render_template('pergunta3.html', resposta=resposta)
-
 @APP.route('/pergunta/4')
 def pergunta4():
     resposta = db.execute('''
@@ -169,23 +151,6 @@ concelhos.concelho,
 agrupamentos.agrupamento''').fetchall()
     return render_template('pergunta6.html', resposta=resposta)
 
-@APP.route('/pergunta/6')
-def pergunta6():
-    resposta = db.execute('''
-SELECT
-concelhos.concelho as concelho,
-agrupamentos.agrupamento as agrupamento
-FROM agrupamentos
-JOIN escolas ON escolas.agrupamento = agrupamentos.cod
-JOIN concelhos ON concelhos.cod = escolas.concelho
-JOIN turmas ON turmas.escola = escolas.cod
-WHERE turmas.natureza = 'Público' AND turmas.tipologia = 'EB'
-GROUP BY concelhos.concelho, agrupamentos.agrupamento
-HAVING COUNT(escolas.cod) > 4
-ORDER BY
-concelhos.concelho,
-agrupamentos.agrupamento''').fetchall()
-    return render_template('pergunta6.html', resposta=resposta)
 
 @APP.route('/pergunta/7')
 def pergunta7():
