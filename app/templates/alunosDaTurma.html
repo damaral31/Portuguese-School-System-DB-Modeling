@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Turma {{ turmaX['CODTURMA'] }} de {{ turmaX['ESCOLA'] }}</h1>
+
+<h2>Dados da Turma:</h2>
+<ul>
+    <li>Código da Turma: {{ turmaX['CODTURMA'] }}</li>
+    <li>Escola: {{ turmaX['ESCOLA'] }}</li>
+    <li>Natureza: {{ turmaX['NATUREZA'] }}</li>
+    <li>Orientação: {{ turmaX['ORIENTACAO'] }}</li>
+    <li>Nível de Escolaridade: {{ turmaX['NIVEL'] }}</li>
+    <li>Oferta: {{ turmaX['OFERTA'] }}</li>
+    <li>Ano de Escolaridade: {{ turmaX['ANO'] }}</li>
+    <li>Ciclo: {{ turmaX['CICLO'] }}</li>
+    <li>Curso: {{ turmaX['CURSO'] }}</li>
+    <li>Número de Alunos (Homens): {{ turmaX['n_homens'] }}</li>
+    <li>Número de Alunas (Mulheres): {{ turmaX['n_mulheres'] }}</li>
+</ul>
+
+{% endblock %}
