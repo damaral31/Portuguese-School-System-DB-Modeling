@@ -78,15 +78,14 @@ JOIN Escolas e ON t.escola = e.cod
 JOIN Concelhos c ON e.concelho = c.cod
 JOIN Distritos d ON c.distrito = d.cod
 
- -- Relacionar com EntidadesEscola
 LEFT JOIN EntidadesEscola ee ON t.entidadeEscola = ee.cod
 LEFT JOIN Concelhos cee ON ee.concelho = cee.cod
 LEFT JOIN Distritos dee ON cee.distrito = dee.cod
 WHERE(
-    d.distrito IN ('Porto', 'Lisboa')
-    OR dee.distrito IN ('Porto', 'Lisboa')
+    d.distrito IN ("Porto", "Lisboa")
+    OR dee.distrito IN ("Porto"", ""Lisboa")
 )
-    AND t.oferta NOT NULL
+    AND t.oferta IS NOT NULL
 GROUP BY d.distrito, t.oferta
 ORDER BY d.distrito ASC, t.oferta ASC;
 </code></pre>
@@ -94,7 +93,18 @@ ORDER BY d.distrito ASC, t.oferta ASC;
 
 <h2>Resultado</h2>
 
-
+<table>
+    <tr>
+        <th>Distrito</th>
+        <th>Curso</th>
+    </tr>
+    {% for row in resposta %}
+    <tr>
+        <td>{{ row.distrito }}</td>
+        <td>{{ row.curso }}</td>
+    </tr>
+    {% endfor %}
+</table>
 
 {% endblock %}
     
