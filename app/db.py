@@ -4,6 +4,7 @@ import re
 
 global DB, DB_FILE
 
+
 DB_FILE = 'AlunosMatriculados.db'
 
 DB = dict()

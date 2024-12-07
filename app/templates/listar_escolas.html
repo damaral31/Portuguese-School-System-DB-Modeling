@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<h1>Concelhos</h1>
+<h1>Escolas</h1>
 
 <table>
   <tr>
@@ -10,22 +10,28 @@
       Código
     </th>
     <th>
-      Designação
+      Escolas
     </th>
     <th>
-      Nº de recintos
+      nr de turmas
+    </th>
+    <th>
+    Concelho
     </th>
   </tr>
-  {% for c in concelhos %}
+  {% for d in escolas %}
   <tr>
     <td>
-      {{ c.cod }}
+      {{ d.cod }}
     </td> 
     <td>
-       {{c.designacao }}
+      {{ d.escola }}
     </td> 
     <td>
-      {{c.num_recintos}}
+      {{d.num_turmas }}
+    </td>
+    <td>
+      {{d.concelho }}
     </td>
   </tr>
   {% endfor %}

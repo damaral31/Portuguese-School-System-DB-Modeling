@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Pergunta 5</h1>
+<p>
+    <b>Tópicos:</b> select, as, like, funções de agregação, order by
+</p>
+
+<h2>Enunciado</h2>
+<p style= "font-size: 20px">
+    <b>Selecione o nome do concelho, a escola e o número de turmas como "Nº de turmas" das turmas que a organização contém "S3" no nome.</b>
+    <br>
+    Ordene por número de turmas descendente e por nome dos concelhos.
+</p>
+
+<h2>Resolução</h2>
+<p>
+    Começemos por selecionar as colunas pedidas acima, tomando atenção em criar um <b>alias</b> "Nº de turmas" para a função de agregação <code class="language-sql">COUNT()</code>. Aproveitamos também para já juntar todas as tabelas relevantes para o problema:
+</p>
+
+<pre><code class="language-sql">SELECT
+    c.concelho,
+    e.escola,
+    COUNT(t.cod) AS "Nº de turmas"
+FROM Turmas t
+JOIN Escolas e ON t.escola = e.cod
+JOIN Concelhos c ON e.concelho = c.cod
+</code></pre>
+
+
+<p>
+    Mas destas queremos apenas as escolas cuja <code class="language-sql">organizacao</code> contém a expressão "S3". Podemos fazer isso com a wildcard <code class="language-sql">%</code> da seguinte forma:
+</p>
+
+<pre><code class="language-sql">WHERE t.organizacao LIKE '%S3%' --Representação de "contém S3" 
+</code></pre>
+
+<p>
+    Podemos agora criar os grupos sobre os quais o <code class="language-sql">COUNT()</code> vai operar (neste cada um grupo será uma escola):
+</p>
+
+<pre><code class="language-sql">GROUP BY e.escola
+</code></pre>
+
+<p>
+    E resta apenas ordenar como pedido:
+</p>
+
+<pre><code class="language-sql">ORDER BY
+    "Nº de turmas" DESC,
+    c.concelho ASC;
+</code></pre>
+
+<p>
+Tendo tudo isso em conta, eis a query na tua totalidade:
+</p>
+
+<pre><code class="language-sql">SELECT
+        c.concelho,
+        e.escola,
+        COUNT(t.cod) AS "Nº de turmas"
+FROM Turmas t
+JOIN Escolas e ON t.escola = e.cod
+JOIN Concelhos c ON e.concelho = c.cod
+WHERE t.organizacao LIKE '%S3%'
+GROUP BY e.escola
+ORDER BY
+    "Nº de turmas" DESC,
+    c.concelho ASC;
+</code></pre>
+
+<h2>Resultado</h2>
+
+<table>
+    <tr>
+        <th>Concelho</th>
+        <th>Escola</th>
+        <th>Número de Turmas</th>
+    </tr>
+    {% for row in resposta %}
+    <tr>
+        <td>{{ row.concelho }}</td>
+        <td>{{ row.escola }}</td>
+        <td>{{ row.num }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

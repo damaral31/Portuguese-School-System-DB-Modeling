@@ -8,7 +8,7 @@
 </p>
 
 <h2>Enunciado</h2>
-<p>
+<p style= "font-size: 20px">
     <b>Em cada concelho, quantas escolas que NÃO pertencem a um agrupamento existem?</b>
     <br><br>
     <u>Utilize vários tipos de JOIN.</u> Apresente o nome do concelho e o número de escolas, e ordene pelo nome do concelho.
@@ -24,8 +24,8 @@
 </p>
 
 <pre><code class="language-sql">SELECT
-concelhos.concelho,
-COUNT(entidades.escola)
+    concelhos.concelho,
+    COUNT(escolas.cod) as "Nº Escolas"
 </code></pre>
 
 <p>
@@ -33,8 +33,8 @@ COUNT(entidades.escola)
 </p>
 
 <pre><code class="language-sql">FROM concelhos
-JOIN entidades ON entidades.concelho = concelhos.cod
-LEFT JOIN agrupamentos ON agrupamentos.cod = entidades.agrupamento
+JOIN escolas ON escolas.concelho = concelhos.cod
+LEFT JOIN agrupamentos ON agrupamentos.cod = escolas.agrupamento
 </code></pre>
 
 <p>
@@ -43,12 +43,12 @@ LEFT JOIN agrupamentos ON agrupamentos.cod = entidades.agrupamento
     Podemos finalmente filtrar as escolas e ordenar corretamente o resultado:
 </p>
 
-<pre><code class="language-sql">WHERE agrupamentos.cod = NULL
+<pre><code class="language-sql">WHERE agrupamentos.cod IS NULL
 GROUP BY concelhos.cod;
 </code></pre>
 
 <p>
-    Procuramos nesta query por <code class="language-sql">NULL</code> pois, nas linhas em não existe correspondência para alguma coluna, tal coluna será preenchida com <code style='language-sql'>NULL</code>. Ou seja, em termos leigos, entidades sem agrupamento têm a coluna <code style='language-sql'>agrupamentos.cod = NULL</code>.
+    Procuramos nesta query por <code class="language-sql">NULL</code> pois, nas linhas em não existe correspondência para alguma coluna, tal coluna será preenchida com <code class='language-sql'>NULL</code>. Ou seja, em termos leigos, entidades sem agrupamento têm a coluna <code class='language-sql'>agrupamentos.cod = NULL</code>.
     <br><br>
     Em último lugar, ordenamos a tabela alfabeticamente pelos nomes dos concelhos.cod
     <br><br>
@@ -57,18 +57,27 @@ GROUP BY concelhos.cod;
 
 <pre><code class="language-sql">SELECT
     concelhos.concelho,
-    COUNT(entidades.cod) as "Nº Escolas"
+    COUNT(escolas.cod) as "Nº Escolas"
 FROM concelhos
-JOIN entidades ON entidades.concelho = concelhos.cod
-LEFT JOIN agrupamentos ON agrupamentos.cod = entidades.agrupamento
-WHERE agrupamentos.cod = NULL
+JOIN escolas ON escolas.concelho = concelhos.cod
+LEFT JOIN agrupamentos ON agrupamentos.cod = escolas.agrupamento
+WHERE agrupamentos.cod IS NULL
 GROUP BY concelhos.cod;
 </code></pre>
 
-<p>
-    Que resulta na tabela:
-</p>
+<h2>Resultado</h2>
 
-<h1>INTRODUZIR TABELA DA PERGUNTA 1</h1>
+<table>
+    <tr>
+        <th>Concelho</th>
+        <th>Nº Escolas</th>
+    </tr>
+    {% for linha in resposta %}
+    <tr>
+        <td>{{ linha.concelho }}</td>
+        <td>{{ linha.num }}</td>
+    </tr>
+    {% endfor %}
+</table>
 
 {% endblock %}
