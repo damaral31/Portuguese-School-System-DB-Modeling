@@ -31,7 +31,7 @@ def conjuntos():
 def funcoes_de_agragacao():
     return render_template('Funcoes_de_agregacoes.html')
 
-@APP.route('/explicacao/Case_explicacao')
+@APP.route('/explicacao/Case')
 def case():
     return render_template('Cases_explicacao.html')
 
@@ -50,6 +50,10 @@ def agregacaoDupla():
 @APP.route('/explicacao/ROW_NUMBER')
 def rowNumber():
     return render_template('explicacaoRowNumber.html')
+  
+@APP.route('/explicacao/Subquery_Variavel')
+def subqueryVariavel():
+    return render_template('explicacaoSubqueryVariavel.html')
 
 @APP.route('/pergunta/1')
 def pergunta1():
@@ -90,24 +94,6 @@ def pergunta2():
     ORDER BY d.distrito ASC, t.oferta ASC;
     ''').fetchall()
     return render_template('pergunta2.html')
-
-@APP.route('/pergunta/3')
-def pergunta3():
-    resposta = db.execute('''SELECT
- escolas.escola AS NomeEscola
-FROM
-    escolas
-JOIN
-    agrupamentos ON escolas.cod = agrupamentos.codSede
-JOIN
-    concelhos ON escolas.concelho = concelhos.cod
-JOIN
-    NUTS_III ON concelhos.NUTSIII = NUTS_III.cod
-JOIN
-    NUTS_II ON NUTS_III.NUTII = NUTS_II.cod
-WHERE
-    NUTS_II.NUTII NOT IN ('Centro', 'Alentejo');''').fetchall()
-    return render_template('pergunta3.html', resposta=resposta)
 
 @APP.route('/pergunta/3')
 def pergunta3():
@@ -169,14 +155,6 @@ concelhos.concelho,
 agrupamentos.agrupamento''').fetchall()
     return render_template('pergunta6.html', resposta=resposta)
 
-
-# DIOGO
-@APP.route('/explicacao/Subquery_Variavel')
-def subqueryVariavel():
-    return render_template('explicacaoSubqueryVariavel.html')
-
-
-
 @APP.route('/pergunta/6')
 def pergunta6():
     resposta = db.execute('''
@@ -194,6 +172,7 @@ ORDER BY
 concelhos.concelho,
 agrupamentos.agrupamento''').fetchall()
     return render_template('pergunta6.html', resposta=resposta)
+
 
 @APP.route('/pergunta/7')
 def pergunta7():

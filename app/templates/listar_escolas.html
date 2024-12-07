@@ -25,13 +25,13 @@
       {{ d.cod }}
     </td> 
     <td>
-      {{ d.escola }}
+      <a href="/escolas/{{ d.cod }}">{{ d.escola }}</a>
     </td> 
     <td>
       {{d.num_turmas }}
     </td>
     <td>
-      {{d.concelho }}
+      <a href="/concelhos/{{ d.concelho }}">{{ d.concelho }}</a>
     </td>
   </tr>
   {% endfor %}
