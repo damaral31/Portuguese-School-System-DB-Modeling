@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Pergunta 3</h1>
+<p>
+    <b>Tópicos:</b> Where, Conjuntos
+</p>
+
+<h2>Enunciado</h2>
+<p style= "font-size: 20px">
+    De todas as escolas sede, escolhe aquelas que não são nem do <b>Centro</b> nem do <b>Alentejo</b> (NUTSII)
+</p>
+
+
+
+<h2>Resolução</h2>
+<p>
+    Comecemos por selecionar as colunas desejadas e juntar tabelas relevantes: 
+</p>
+
+<pre><code class="language-sql">    SELECT escolas.escola AS NomeEscola
+FROM escolas
+JOIN agrupamentos ON escolas.cod = agrupamentos.codSede
+JOIN concelhos ON escolas.concelho = concelhos.cod
+JOIN NUTS_III ON concelhos.NUTSIII = NUTS_III.cod
+JOIN NUTS_II ON NUTS_III.NUTII = NUTS_II.cod
+</code></pre>
+
+<p>
+Aplicando o filtro desejado, ou seja, escolas que não são nem do Centro nem do Alentejo:
+</p>
+
+<pre><code class="language-sql">WHERE
+NUTS_II.NUTII NOT IN ('Centro', 'Alentejo');
+</code></pre>
+<p>
+    Obtemos portanto a query na sua totalidade:
+</p>
+
+<!--Query Inteira-->
+<pre><code class="language-sql">SELECT
+    escolas.escola AS NomeEscola
+FROM escolas
+JOIN agrupamentos ON escolas.cod = agrupamentos.codSede
+JOIN concelhos ON escolas.concelho = concelhos.cod
+JOIN NUTS_III ON concelhos.NUTSIII = NUTS_III.cod
+JOIN NUTS_II ON NUTS_III.NUTII = NUTS_II.cod
+WHERE NUTS_II.NUTII NOT IN ('Centro', 'Alentejo');
+   
+</code></pre>
+
+
+<h2>Resultado</h2>
+
+
+<table>
+    <tr>
+        <th>NomeEscola</th>
+    </tr>
+    <tr>
+        {% for row in resposta %}
+        <td>{{ row.NomeEscola }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+
+
+{% endblock %}
+    
