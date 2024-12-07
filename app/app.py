@@ -162,6 +162,41 @@ def pergunta7():
     ''').fetchall()
     return render_template('pergunta7.html', resposta=resposta)
 
+@APP.route('/pergunta/8')
+def pergunta8():
+    resposta = db.execute('''
+    WITH c1 AS (
+        SELECT
+            distritos.distrito,
+            SUM(alunos.quantidade) AS max_quantidade,
+            escolas.escola
+
+        FROM distritos
+        JOIN concelhos ON concelhos.distrito = distritos.cod
+        JOIN escolas ON escolas.concelho = concelhos.cod
+        JOIN turmas ON turmas.escola = escolas.cod
+        JOIN alunos ON alunos.turma = turmas.cod
+        GROUP BY escolas.escola
+        HAVING distritos.cod IN (
+            SELECT d.cod
+            FROM distritos d
+            WHERE(
+                SELECT COUNT(*)
+                FROM concelhos c
+                JOIN escolas e ON e.concelho = c.cod
+                WHERE c.distrito = d.cod
+            ) > 1000
+        )
+    )
+
+    SELECT
+        c1.distrito,
+        c1.escola,
+        MAX(c1.max_quantidade) AS alunos
+    FROM c1
+    ''').fetchall()
+    return render_template('pergunta8.html', resposta=resposta)
+
 @APP.route('/distritos/')
 def listar_distritos():
     distritos = db.execute('''
