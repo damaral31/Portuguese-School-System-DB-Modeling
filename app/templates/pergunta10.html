@@ -205,7 +205,7 @@ ORDER BY
     </tr>
     <tr>
         {% for row in resposta %}
-        <td>{{ row.NomeConcelho }}</td>
+        <td><a href="/concelhos/{{ row.cod }}">{{ row.NomeConcelho }}</a></td>
         <td>{{ row.SomaHomensComCondicao }}</td>
         <td>{{ row.SomaHomensSemCondicao }}</td>
         <td>{{ row.SomaMulheresComCondicao }}</td>
@@ -215,8 +215,6 @@ ORDER BY
     </tr>
     {% endfor %}
 </table>
-
-
 
 {% endblock %}
     

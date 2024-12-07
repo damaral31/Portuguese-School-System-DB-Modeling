@@ -160,6 +160,8 @@ ORDER BY
 def pergunta6():
     resposta = db.execute('''
 SELECT
+concelhos.cod as cod,
+agrupamentos.cod as cod_agrupamento,   
 concelhos.concelho as concelho,
 agrupamentos.agrupamento as agrupamento
 FROM agrupamentos
@@ -179,6 +181,7 @@ def pergunta7():
     resposta = db.execute('''
 WITH MediaRaparigasPorDistrito AS (
  SELECT
+        d.cod AS cod,
         d.distrito,
         AVG(a.quantidade) AS media_raparigas
     FROM distritos d
@@ -191,12 +194,14 @@ WITH MediaRaparigasPorDistrito AS (
 ),
 DistritosOrdenados AS (
     SELECT
+        cod,
         distrito,
         media_raparigas,
         ROW_NUMBER() OVER (ORDER BY media_raparigas ASC) AS rank 
     FROM MediaRaparigasPorDistrito                             
 )
 SELECT
+    cod AS Cod,
     distrito AS Distrito,
     media_raparigas AS med
 FROM DistritosOrdenados
@@ -209,6 +214,8 @@ ORDER BY rank;
 def pergunta8():
     resposta = db.execute('''WITH c1 AS (
     SELECT
+        distritos.cod AS cod,
+        escolas.cod AS cod_escola,
         distritos.distrito,
         SUM(alunos.quantidade) AS max_quantidade,
         escolas.escola
@@ -229,6 +236,8 @@ def pergunta8():
 )
 
 SELECT
+    c1.cod,
+    c1.cod_escola,
     c1.distrito,
     c1.escola,
     MAX(c1.max_quantidade) AS alunos
@@ -240,6 +249,7 @@ def pergunta9():
     resposta = db.execute('''
                           WITH EstatisticasEscolas AS (
     SELECT
+        escolas.cod AS CodEscola,
         escolas.escola AS NomeEscola,
         COUNT(DISTINCT turmas.cod) AS NumeroTurmas,
         SUM(alunos.quantidade) AS NumeroAlunos
@@ -259,6 +269,7 @@ MediasGlobais AS (
 
 
 SELECT
+    ee.CodEscola,
     ee.NomeEscola,
     ee.NumeroAlunos,
     CASE
@@ -331,6 +342,7 @@ AlunosPorConcelho AS (
 )
 
 SELECT
+    c.concelhoCod as cod,
     NomeConcelho,
     SomaHomensComCondicao,
     SomaHomensSemCondicao,

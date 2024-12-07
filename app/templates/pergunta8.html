@@ -107,8 +107,8 @@ FROM c1
         <th>NumeroAlunos</th>
     <tr>
         {% for row in resposta %}
-        <td>{{ row.distrito }}</td>
-        <td>{{ row.escola }}</td>
+        <td><a href="/distritos/{{ row.cod }}">{{ row.distrito }}</a></td>
+        <td><a href="/escolas/{{ row.cod_escola }}">{{ row.escola }}</a></td>
         <td>{{ row.alunos }}</td>
     </tr>
     {% endfor %}
