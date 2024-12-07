@@ -2,26 +2,7 @@
 
 {% block content %}
 
-<h1>Base de dados de recintos culturais</h1>
-
-<table>
-  <tr>
-    <th>
-      Distritos
-    </th>
-    <th>
-      Concelhos
-    </th>
-  </tr>
-  <tr>
-    <td>
-      {{ stats.n_distritos }}
-    </td> 
-    <td>
-      {{ stats.n_concelhos }}
-    </td> 
-  </tr>
-</table>
+<h1>Base de dados</h1>
 
 <p>
   <a href="/distritos">Listar distritos</a>
@@ -61,6 +42,10 @@
 </p>
 <p>
   <a href="/AlunosMatriculados">Visualizar Tabela</a>
+</p>
+
+<p>
+  <a href="/explicacao/Subquery_Variavel">Subquery Variável</a>
 </p>
 
 {% endblock %}

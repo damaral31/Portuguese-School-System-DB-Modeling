@@ -61,6 +61,11 @@ def pergunta4():
     return render_template('pergunta4.html')
 
 # DIOGO
+@APP.route('/explicacao/Subquery_Variavel')
+def subqueryVariavel():
+    return render_template('explicacaoSubqueryVariavel.html')
+
+
 @APP.route('/AlunosMatriculados', methods=['GET', 'POST'])
 def visualizarDados():
     concelhos = db.execute('SELECT DISTINCT concelho FROM Concelhos').fetchall()
