@@ -110,7 +110,7 @@ WHERE
 
 @APP.route('/pergunta/4')
 def pergunta4():
-  resposta = db.execute('''
+    resposta = db.execute('''
     SELECT
         sub.distrito AS Distrito,
         MIN(sub.num) AS num
@@ -125,7 +125,7 @@ def pergunta4():
         WHERE t.nivel LIKE "Ensino Secundário"
         GROUP BY d.cod, d.distrito
     ) AS sub;
-    ''').fetchall()
+''').fetchall()
     return render_template('pergunta4.html', resposta=resposta)
   
 @APP.route('/pergunta/5')
