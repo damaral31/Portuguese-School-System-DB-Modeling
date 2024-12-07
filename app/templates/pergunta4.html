@@ -20,8 +20,8 @@
 </p>
 
 <pre><code class="language-sql">SELECT
-    distrito,
-    MIN(num) as Min
+    sub.distrito AS Distrito,
+    MIN(sub.num) AS "Número de Escolas"
 </code></pre>
 
 <p>
@@ -32,26 +32,28 @@
 
 <pre><code class="language-sql">--Já dentro da subquery
 SELECT
-    distritos.distrito as distrito,
-    COUNT(turmas.cod) as num
-FROM distritos
-JOIN concelhos ON concelhos.distrito = distritos.cod
-JOIN entidades ON entidades.concelho = concelhos.cod
-JOIN turmas ON turmas.entidade = entidades.cod
+    d.distrito AS distrito,
+    COUNT(t.cod) AS num
+FROM distritos d
+JOIN concelhos c ON c.distrito = d.cod
+JOIN escolas e ON e.concelho = c.cod
+JOIN turmas t ON t.escola = e.cod
 </code></pre>
 
 <p>
+    <b>ATENÇÃO:</b> Vale notar que a tabela turmas é junta duas vezes. Isto porque algumas turmas pertencem a <code class="language-sql">Escolas</code>, ao passo que outras pertencem a <code class="language-sql">EntidadesEscola</code>.
+    <br><br>
     Mas como queremos as turmas de secundário (identificadas com nível <code class="language-sql">"Ensino Secundário"</code>):
 </p>
 
-<pre><code class="language-sql">WHERE turmas.nivel like "Ensino Secundário"
+<pre><code class="language-sql">WHERE t.nivel LIKE "Ensino Secundário"
 </code></pre>
 
 <p>
-    E agrupando o <code class="language-sql">COUNT()</count> por distrito, fechamos a subquery:
+    E agrupando o <code class="language-sql">COUNT()</code> por distrito, fechamos a subquery:
 </p>
 
-<pre><code class="language-sql">GROUP BY distritos.cod
+<pre><code class="language-sql">GROUP BY d.cod, d.distrito
 --Fim da subquery
 </code></pre>
 
@@ -60,25 +62,34 @@ Tendo tudo isso em conta, eis a query na tua totalidade:
 </p>
 
 <pre><code class="language-sql">SELECT
-    distrito,
-    MIN(num) as Min
-FROM(
+    sub.distrito AS Distrito,
+    MIN(sub.num) AS "Número de Escolas"
+FROM (
     SELECT
-        distritos.distrito as distrito,
-        COUNT(turmas.cod) as num
-    FROM distritos
-    JOIN concelhos ON concelhos.distrito = distritos.cod
-    JOIN entidades ON entidades.concelho = concelhos.cod
-    JOIN turmas ON turmas.entidade = entidades.cod
-    WHERE turmas.nivel like "Ensino Secundário"
-    GROUP BY distritos.cod
-);
+        d.distrito AS distrito,
+        COUNT(t.cod) AS num
+    FROM distritos d
+    JOIN concelhos c ON c.distrito = d.cod
+    JOIN escolas e ON e.concelho = c.cod
+    JOIN turmas t ON t.escola = e.cod
+    WHERE t.nivel LIKE "Ensino Secundário"
+    GROUP BY d.cod, d.distrito
+) AS sub;
 </code></pre>
 
-<p>
-    Que resulta na tabela:
-</p>
+<h2>Resultado</h2>
 
-<h1>INTRODUZIR TABELA DA PERGUNTA 4</h1>
+<table>
+    <tr>
+        <th>Distrito</th>
+        <th>Número de Turmas</th>
+    </tr>
+    {% for row in resposta %}
+    <tr>
+        <td>{{ row.Distrito }}</td>
+        <td>{{ row.num }}</td>
+    </tr>
+    {% endfor %}
+</table>
 
 {% endblock %}
