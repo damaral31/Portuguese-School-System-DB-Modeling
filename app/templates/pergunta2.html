@@ -103,7 +103,8 @@ ORDER BY d.distrito ASC, t.oferta ASC;
     </tr>
     {% for row in resposta %}
     <tr>
-        <td>{{ row.distrito }}</td>
+        <td>
+            <a href="/distritos/{{ row.cod }}">{{ row.distrito }}</a></td>
         <td>{{ row.curso }}</td>
     </tr>
     {% endfor %}

@@ -62,7 +62,9 @@ WHERE NUTS_II.NUTII NOT IN ('Centro', 'Alentejo');
     </tr>
     <tr>
         {% for row in resposta %}
-        <td>{{ row.NomeEscola }}</td>
+        <td>
+            <a href="/escolas/{{ row.cod }}">{{ row.NomeEscola }}</a>
+        </td>
     </tr>
     {% endfor %}
 </table>
