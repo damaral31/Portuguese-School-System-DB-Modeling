@@ -169,6 +169,14 @@ concelhos.concelho,
 agrupamentos.agrupamento''').fetchall()
     return render_template('pergunta6.html', resposta=resposta)
 
+
+# DIOGO
+@APP.route('/explicacao/Subquery_Variavel')
+def subqueryVariavel():
+    return render_template('explicacaoSubqueryVariavel.html')
+
+
+
 @APP.route('/pergunta/6')
 def pergunta6():
     resposta = db.execute('''
