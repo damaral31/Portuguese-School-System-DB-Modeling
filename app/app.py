@@ -135,7 +135,21 @@ def pergunta4():
   
 @APP.route('/pergunta/5')
 def pergunta5():
-    return render_template('pergunta5.html')
+    resposta = db.execute('''SELECT
+c.concelho,
+e.escola,
+COUNT(t.cod) AS num
+FROM Turmas t
+JOIN Escolas e ON t.escola = e.cod
+JOIN Concelhos c ON e.concelho = c.cod
+WHERE t.organizacao LIKE '%S3%'
+GROUP BY
+    c.concelho,
+    e.escola
+ORDER BY
+    num DESC,
+    c.concelho ASC;''').fetchall()
+    return render_template('pergunta5.html', resposta=resposta)
 
 @APP.route('/pergunta/6')
 def pergunta6():
@@ -154,29 +168,37 @@ ORDER BY
 concelhos.concelho,
 agrupamentos.agrupamento''').fetchall()
     return render_template('pergunta6.html', resposta=resposta)
-
-@APP.route('/pergunta/6')
-def pergunta6():
-    resposta = db.execute('''
-SELECT
-concelhos.concelho as concelho,
-agrupamentos.agrupamento as agrupamento
-FROM agrupamentos
-JOIN escolas ON escolas.agrupamento = agrupamentos.cod
-JOIN concelhos ON concelhos.cod = escolas.concelho
-JOIN turmas ON turmas.escola = escolas.cod
-WHERE turmas.natureza = 'Público' AND turmas.tipologia = 'EB'
-GROUP BY concelhos.concelho, agrupamentos.agrupamento
-HAVING COUNT(escolas.cod) > 4
-ORDER BY
-concelhos.concelho,
-agrupamentos.agrupamento''').fetchall()
-    return render_template('pergunta6.html', resposta=resposta)
-
 
 @APP.route('/pergunta/7')
 def pergunta7():
-    return render_template('pergunta7.html')
+    resposta = db.execute('''
+WITH MediaRaparigasPorDistrito AS (
+ SELECT
+        d.distrito,
+        AVG(a.quantidade) AS media_raparigas
+    FROM distritos d
+    JOIN concelhos c ON d.cod = c.distrito
+    JOIN escolas e ON c.cod = e.concelho
+    JOIN turmas t ON e.cod = t.escola
+    JOIN alunos a ON t.cod = a.turma
+    WHERE a.sexo = 'Mulheres'
+    GROUP BY d.distrito
+),
+DistritosOrdenados AS (
+    SELECT
+        distrito,
+        media_raparigas,
+        ROW_NUMBER() OVER (ORDER BY media_raparigas ASC) AS rank 
+    FROM MediaRaparigasPorDistrito                             
+)
+SELECT
+    distrito AS Distrito,
+    media_raparigas AS med
+FROM DistritosOrdenados
+WHERE rank <= 5
+ORDER BY rank;
+    ''').fetchall()
+    return render_template('pergunta7.html', resposta=resposta)
 
 @APP.route('/pergunta/8')
 def pergunta8():
