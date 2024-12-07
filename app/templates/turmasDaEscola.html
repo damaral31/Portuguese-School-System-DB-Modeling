@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>{{ escolaX[0].ESCOLA }}</h1>
+
+<h2>Dados da Escola:</h2>
+<ul>
+    <li>Código da Escola: {{ escolaX[0].CODIGO }}</li>
+    <li>Nome: {{ escolaX[0].ESCOLA }}</li>
+    <li>Entidade: {{ escolaX[0].ENTIDADE }}</li>
+    <li>Agrupamento: <a href= /agrupamentos/{{escolaX[0].CODAGRUPAMENTO}}/>{{ escolaX[0].AGRUPAMENTO }}</a></li>
+    <li>Concelho: <a href= /concelhos/{{escolaX[0].CODCONCELHO}}/>{{ escolaX[0].CONCELHO }}</a></li>
+    <li>Distrito: <a href= /distritos/{{escolaX[0].CODDISTRITO}}/>{{ escolaX[0].DISTRITO }}</a></li>
+</ul>
+
+<h2>Turmas da Escola:</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Turma</th>
+            <th>Nível de Escolaridade</th>
+            <th>Ciclo</th>
+            <th>Ano de Escolaridade</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for r in escolaX %}
+        <tr>
+            <td><a href ="/escolas/{{ escolaX[0].CODIGO }}/turmas/{{ r.CODIGOTURMA }}">{{ r.CODIGOTURMA }}</a></td>
+            <td>{{ r.NIVEL }}</td>
+            <td>{{ r.CICLO}}</td>
+            <td>{{ r.ANO }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+
+{% endblock %}
