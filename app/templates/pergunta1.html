@@ -78,7 +78,9 @@ GROUP BY concelhos.cod;
     </tr>
     {% for linha in resposta %}
     <tr>
-        <td>{{ linha.concelho }}</td>
+        <td>
+            <a href="/concelhos/{{ linha.cod }}">{{ linha.concelho }}</a></td>
+            
         <td>{{ linha.num }}</td>
     </tr>
     {% endfor %}

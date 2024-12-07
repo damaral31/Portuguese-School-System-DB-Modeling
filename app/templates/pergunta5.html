@@ -84,8 +84,9 @@ ORDER BY
     </tr>
     {% for row in resposta %}
     <tr>
-        <td>{{ row.concelho }}</td>
-        <td>{{ row.escola }}</td>
+        <td><a href="/concelhos/{{ row.cod }}">{{ row.concelho }}</a></td>
+        <td>
+            <a href="/escolas/{{ row.cod_escola }}">{{ row.escola }}</a></td>
         <td>{{ row.num }}</td>
     </tr>
     {% endfor %}

@@ -79,8 +79,8 @@ agrupamentos.agrupamento;
     </tr>
     <tr>
         {% for row in resposta %}
-        <td>{{ row.concelho }}</td>
-        <td>{{ row.agrupamento }}</td>
+        <td><a href="/concelhos/{{ row.cod }}">{{ row.concelho }}</a></td>
+        <td><a href="/agrupamentos/{{ row.cod_agrupamento }}">{{ row.agrupamento }}</a></td>
     </tr>
     {% endfor %}
 </table>

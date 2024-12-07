@@ -90,7 +90,7 @@ FROM (
     </tr>
     {% for row in resposta %}
     <tr>
-        <td>{{ row.Distrito }}</td>
+        <td><a href="/distritos/{{ row.cod }}">{{ row.distrito }}</a></td>
         <td>{{ row.num }}</td>
     </tr>
     {% endfor %}
