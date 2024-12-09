@@ -1,0 +1,219 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Pergunta 10</h1>
+<p>
+    <b>Tópicos:</b>
+    <a href="/explicacao/WHERE">WHERE</a>,
+    <a href="/explicacao/Conjuntos">Conjuntos</a>,
+    <a href="/explicacao/Funcoesdeagregacao">Funções de Agregação</a>,
+    <a href="/explicacao/Subqueries">Subqueries</a>,
+    <a href="/explicacao/Case">Case</a>
+</p>
+
+<h2>Enunciado</h2>
+<p style= "font-size: 20px">
+    Recolha a soma de todos os alunos 'Homens' e 'Mulheres', separadamente, de todas escolas sede de um concelho.
+    <b>CONDIÇÃO</b>: Caso o concelho seja situado num distrito que pertença a mais do que uma NUTSII, registe paralelamente
+     a soma dos alunos 'Homens' e 'Mulheres' das turmas que tenham nível 'Ensino Básico'.
+    Deve retornar o Nome do Concelho, a Soma dos Homens com a condição aplicada, a Soma dos Homens sem a condição aplicada, 
+    a Soma das Mulheres com a condição aplicada e a Soma das Mulheres sem a condição aplicada e um booleano da condição aplicada (True se sim, False se não).
+    Ordene por concelho.
+</p>
+
+
+
+<h2>Resolução</h2>
+<p>
+    Comecemos por destacar os concelhos que situam-se em distritos que pertencem a mais do que uma NUTSII.</p>
+    <p>Para tal, conta-se a quantidade de NUTSII que cada distrito tem e se tiver mais que 1 registar True senao falso</p>
+
+<pre><code class="language-sql"> WITH NUTSII_Por_Distrito AS (
+    SELECT
+           d.cod AS DistritoCod,
+           CASE
+               WHEN COUNT(DISTINCT NUTS_II.NUTII) > 1 THEN TRUE
+               ELSE FALSE
+           END AS MaisDeUmNUTSII
+       FROM
+           Distritos d
+       JOIN
+           Concelhos c ON c.distrito = d.cod
+       JOIN
+           NUTS_III ON NUTS_III.cod = c.NUTSIII
+       JOIN
+           NUTS_II ON NUTS_II.cod = NUTS_III.NUTII
+       GROUP BY
+           d.cod
+   )
+</code></pre>
+
+<p>
+    Para agora saber os concelhos que pertencem a distritos que pertencem a mais do que uma NUTSII, junta-se a tabela anterior com a tabela de concelhos.
+</p>
+
+<pre><code class="language-sql">SELECT
+    d.distrito,
+    c.concelho as concelho,
+    c.cod as concelhoCod,
+    n.MaisDeUmNUTSII AS MaisDeUmNUTSII
+FROM
+    Concelhos c
+JOIN
+    Distritos d ON c.distrito = d.cod
+JOIN
+    NUTSII_Por_Distrito n ON n.DistritoCod = d.cod
+ORDER BY
+    d.distrito, c.concelho;
+</code></pre>
+
+<p>
+Agora respeitando a condição do enunciado, vamos calcular a soma de todos os alunos 'Homens' e 'Mulheres', separadamente, de todas escolas sede de um concelho.
+</p>
+
+<pre><code class="language-sql">AlunosPorConcelho AS (
+    SELECT
+        c.Concelho as NomeConcelho,
+        SUM(CASE WHEN a.sexo like 'Homens' and ((c.MaisDeUmNUTSII = TRUE AND t.nivel  like 'Ensino básico')
+        OR c.MaisDeUmNUTSII = FALSE)
+        THEN a.quantidade ELSE 0 END) AS SomaHomensComCondicao,
+        SUM(CASE WHEN a.sexo like 'Mulheres' and ((c.MaisDeUmNUTSII = TRUE AND t.nivel like 'Ensino básico') OR c.MaisDeUmNUTSII = FALSE)
+        THEN a.quantidade ELSE 0 END) AS SomaMulheresComCondicao,
+        SUM(CASE WHEN a.sexo like 'Homens' THEN a.quantidade ELSE 0 END) AS SomaHomensSemCondicao,
+        SUM(CASE WHEN a.sexo like 'Mulheres' THEN a.quantidade ELSE 0 END) AS SomaMulheresSemCondicao
+    FROM
+        ConcelhosComMaisDeUmNUTSII c
+    JOIN Escolas e ON e.concelho = c.ConcelhoCod
+    JOIN Agrupamentos ag ON ag.codSede = e.cod
+    JOIN Turmas t ON t.escola = e.cod
+    JOIN Alunos a ON a.turma = t.cod
+    GROUP BY
+        c.Concelho
+    )
+</code></pre>
+<p>
+    É importante referir como a condição <code class="language-sql">SUM()</code> funciona neste caso. A condição
+    divide-se então em tres partes:
+    <ul>
+        <li><code class="language-sql">WHEN a.sexo like 'Homens'</code> - Verifica se o aluno é do sexo masculino</li>
+        <li><code class="language-sql">and (c.MaisDeUmNUTSII = TRUE AND t.nivel  like 'Ensino básico')</code> - Verifica se o concelho situa-se a um distrito que pertence a mais do que uma NUTSII e se a turma é de nível 'Ensino básico'.</li>
+        <li><code class="language-sql">OR c.MaisDeUmNUTSII = FALSE</code> - Se a condição anterior não for satisfeita, adiciona todos os alunos sem restrições</li>
+    </ul>
+</p>
+<p>
+    Por fim, juntamos a tabela anterior com a tabela de concelhos, ordenando por concelho e selecionando as colunas relevantes. 
+</p>
+<pre><code class="language-sql">SELECT
+    NomeConcelho,
+    SomaHomensComCondicao,
+    SomaHomensSemCondicao,
+    SomaMulheresComCondicao,
+    SomaMulheresSemCondicao,
+    c.MaisDeUmNUTSII
+FROM
+    AlunosPorConcelho
+JOIN ConcelhosComMaisDeUmNUTSII c  on c.concelho=AlunosPorConcelho.NomeConcelho
+ORDER BY
+    NomeConcelho;
+   
+</code></pre>
+
+<p>
+    Obtemos portanto a query na sua totalidade:
+</p>
+
+<pre><code class="language-sql">WITH ConcelhosComMaisDeUmNUTSII AS(
+    WITH NUTSII_Por_Distrito AS (
+     SELECT
+            d.cod AS DistritoCod,
+            CASE
+                WHEN COUNT(DISTINCT NUTS_II.NUTII) > 1 THEN TRUE
+                ELSE FALSE
+            END AS MaisDeUmNUTSII
+        FROM
+            Distritos d
+        JOIN
+            Concelhos c ON c.distrito = d.cod
+        JOIN
+            NUTS_III ON NUTS_III.cod = c.NUTSIII
+        JOIN
+            NUTS_II ON NUTS_II.cod = NUTS_III.NUTII
+        GROUP BY
+            d.cod
+    )
+    SELECT
+        d.distrito,
+        c.concelho as concelho,
+        c.cod as concelhoCod,
+        n.MaisDeUmNUTSII AS MaisDeUmNUTSII
+    FROM
+        Concelhos c
+    JOIN
+        Distritos d ON c.distrito = d.cod
+    JOIN
+        NUTSII_Por_Distrito n ON n.DistritoCod = d.cod
+    ORDER BY
+        d.distrito, c.concelho),
+    
+    AlunosPorConcelho AS (
+        -- Calcular a soma de alunos por sexo considerando as condições
+        SELECT
+            c.Concelho as NomeConcelho,
+            SUM(CASE WHEN a.sexo like 'Homens' and ((c.MaisDeUmNUTSII = TRUE AND t.nivel  like 'Ensino básico')
+            OR c.MaisDeUmNUTSII = FALSE)
+            THEN a.quantidade ELSE 0 END) AS SomaHomensComCondicao,
+            SUM(CASE WHEN a.sexo like 'Mulheres' and ((c.MaisDeUmNUTSII = TRUE AND t.nivel like 'Ensino básico') OR c.MaisDeUmNUTSII = FALSE)
+            THEN a.quantidade ELSE 0 END) AS SomaMulheresComCondicao,
+            SUM(CASE WHEN a.sexo like 'Homens' THEN a.quantidade ELSE 0 END) AS SomaHomensSemCondicao,
+            SUM(CASE WHEN a.sexo like 'Mulheres' THEN a.quantidade ELSE 0 END) AS SomaMulheresSemCondicao
+        FROM
+            ConcelhosComMaisDeUmNUTSII c
+        JOIN Escolas e ON e.concelho = c.ConcelhoCod
+        JOIN Agrupamentos ag ON ag.codSede = e.cod
+        JOIN Turmas t ON t.escola = e.cod
+        JOIN Alunos a ON a.turma = t.cod
+        GROUP BY
+            c.Concelho
+    )
+    
+SELECT
+    NomeConcelho,
+    SomaHomensComCondicao,
+    SomaHomensSemCondicao,
+    SomaMulheresComCondicao,
+    SomaMulheresSemCondicao
+FROM
+    AlunosPorConcelho
+JOIN ConcelhosComMaisDeUmNUTSII c  on c.concelho=AlunosPorConcelho.NomeConcelho
+ORDER BY
+    NomeConcelho;
+</code></pre>
+
+<h2>Resultado</h2>
+
+<table>
+    <tr>
+        <th>NomeConcelho</th>
+        <th>SomaHomensComCondicao</th>
+        <th>SomaHomensSemCondicao</th>
+        <th>SomaMulheresComCondicao</th>
+        <th>SomaMulheresSemCondicao</th>
+    </tr>
+    <tr>
+        {% for row in resposta %}
+        <td>{{ row.NomeConcelho }}</td>
+        <td>{{ row.SomaHomensComCondicao }}</td>
+        <td>{{ row.SomaHomensSemCondicao }}</td>
+        <td>{{ row.SomaMulheresComCondicao }}</td>
+        <td>{{ row.SomaMulheresSemCondicao }}</td>
+        
+    </tr>
+    {% endfor %}
+</table>
+
+
+
+{% endblock %}
+    

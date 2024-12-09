@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Escolas</h1>
+
+<table>
+  <tr>
+    <th>
+      Código
+    </th>
+    <th>
+      Escolas
+    </th>
+    <th>
+      Nº de turmas
+    </th>
+    <th>
+    Concelho
+    </th>
+  </tr>
+  {% for d in escolas %}
+  <tr>
+    <td>
+      {{ d.cod }}
+    </td> 
+    <td>
+      <a href="/escolas/{{ d.cod }}/">{{ d.escola }}</a>
+    </td> 
+    <td>
+      {{d.num_turmas }}
+    </td>
+    <td>
+      <a href="/concelhos/{{ d.codConcelho }}/">{{ d.concelho }}</a>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+
+
+{% endblock %}

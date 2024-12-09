@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>LIKE</h1>
+
+<p>
+    A palavra <b>LIKE</b> tem como função verificar a igualdade entre duas <i>strings</i>, estando normalmente uma delas numa coluna. É utilizada em conjunto com um <code class='language-sql'>WHERE</code> mostrar apenas linhas que satisfaçam a condição imposta.
+    <br><br>
+    Por exemplo, considere a tabela <b>jogadores</b>:
+</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>NOME</th>
+            <th>OVERALL</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Joao</td>
+            <td>89</td>
+        </tr>
+        <tr>
+            <td>Joaquim</td>
+            <td>83</td>
+        </tr>
+        <tr>
+            <td>Diego</td>
+            <td>77</td>
+        </tr>
+        <tr>
+            <td>Paulo</td>
+            <td>73</td>
+        </tr>
+        <tr>
+            <td>Diogo</td>
+            <td>80</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>
+    E se a query introduzida for:
+</p>
+
+<pre><code class="language-sql">SELECT *
+FROM jogadores
+WHERE nome LIKE "Paulo"
+ORDER BY nome ASC;
+</code></pre>
+
+<p>
+    O resultado seria:
+</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>NOME</th>
+            <th>OVERALL</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Paulo</td>
+            <td>73</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>
+    Adicionalmente, podem ser utilizados certos caracteres (por vezes chamados <b>wildcards</b>) para alterar certas propriedades da pesquisa. São eles:
+    <ul>
+        <li><b>%</b>: O caracter de porcentagem representa zero, um ou múltiplos caracteres. Por exemplo, <code class="language-sql">nome LIKE 'Jo%'</code> encontraria "João" e "Joaquim", bem como qualquer outro nome que comece com "Jo".</li>
+        <li><b>_</b>: O sublinhado representa um único caracter. Por exemplo, <code class="language-sql">nome LIKE 'Di_go'</code> encontraria "Diogo" e "Diego".</li>
+    </ul>
+    <b>NOTA:</b> Podemos ainda usar vários <i>wildcards</i> para certo casos, como <code class="language-sql">nome LIKE "%o%"</code> para encontrar todas as palavras que contém <code class="language-sql">o</code>   
+    <br><br>
+    Assim, executando a seguinte query:
+</p>
+
+<pre><code class="language-sql">SELECT *
+FROM jogadores
+WHERE nome LIKE "%a%"
+ORDER BY nome ASC;
+</code></pre>
+
+<p>
+    Obtemos:
+</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>NOME</th>
+            <th>OVERALL</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>João</td>
+            <td>89</td>
+        </tr>
+        <tr>
+            <td>Joaquim</td>
+            <td>83</td>
+        </tr>
+        <tr>
+            <td>Paulo</td>
+            <td>73</td>
+        </tr>
+    </tbody>
+</table>
+
+{% endblock %}

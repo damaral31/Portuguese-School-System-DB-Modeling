@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Agrupamentos</h1>
+
+<table>
+  <tr>
+    <th>
+      Código
+    </th>
+    <th>
+      Agrupamento
+    </th>
+    <th>
+      Nº de escolas
+    </th>
+  </tr>
+  {% for d in agrupamentos %}
+  <tr>
+    <td>
+      {{ d.cod }}
+    </td> 
+    <td>
+      <a href="/agrupamentos/{{ d.cod }}/">{{ d.agrupamento }}</a>
+    </td> 
+    <td>
+      {{d.num_escolas }}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+
+
+{% endblock %}

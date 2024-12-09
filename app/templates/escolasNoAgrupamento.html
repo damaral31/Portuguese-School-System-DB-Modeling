@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Escolas no Agrupamento {{ agrupamentoX[0].AGRUPAMENTO }}</h1>
+
+<h2>Dados do Agrupamento</h2>
+<ul>
+    <li>Código: {{ agrupamentoX[0].CODAGRUPAMENTO }}</li>
+    <li>Nome: {{ agrupamentoX[0].AGRUPAMENTO }}</li>
+    <li>Número de Escolas: {{ agrupamentoX[0].N_ESCOLAS }}</li>
+    <li>Escola Sede: <a href= /escolas/{{agrupamentoX[0].CODSEDE}}/>{{ agrupamentoX[0].ESCOLASEDE }}</a></li>
+</ul>
+
+<h2>Escolas no Agrupamento {{ agrupamentoX[0].AGRUPAMENTO }}:</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Código</th>
+            <th>Escola</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for r in agrupamentoX %}
+        <tr>
+            <td>{{ r.CODESCOLA }}</td>
+            <td><a href="/escolas/{{ r.CODESCOLA }}/">{{ r.ESCOLA }}</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

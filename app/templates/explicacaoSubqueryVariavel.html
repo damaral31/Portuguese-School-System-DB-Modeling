@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Subquery Variável</h1>
+
+<p>
+    Uma <b>subquery variável</b> é uma subconsulta que utiliza valores da consulta externa, onde os valor da subquery dependem de cada linha processada pela consulta externa.
+    <br><br>
+    Por exemplo, considere as seguintes tabelas <b>Funcionários</b> e <b>Departamentos</b>. Queremos listar todos os funcionários cujo salário é maior que a média de salário do departamento ao qual pertencem.
+</p>
+
+<table>
+
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Funcionário</th>
+            <th>DepartamentoID</th>
+            <th>Salário</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>1</td>
+            <td>Ana</td>
+            <td>1</td>
+            <td>4000</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>João</td>
+            <td>1</td>
+            <td>3000</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>Maria</td>
+            <td>2</td>
+            <td>5000</td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td>Pedro</td>
+            <td>2</td>
+            <td>4500</td>
+        </tr>
+        <tr>
+            <td>5</td>
+            <td>Lucas</td>
+            <td>5</td>
+            <td>3500</td>
+        </tr>
+    </tbody>
+</table>
+
+<table>
+
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Departamento</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>1</td>
+            <td>Recursos Humanos</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>Tecnologia</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>Marketing</td>
+        </tr>
+        <tr>
+    </tbody>
+</table>
+
+<p> A seguinte query responde corretamenta à questão: </p>
+<pre><code class="language-sql">SELECT Nome, Salario, DepartamentoID
+FROM Funcionarios f
+WHERE Salario > (
+    SELECT AVG(Salario)
+    FROM Funcionarios
+    WHERE DepartamentoID = f.DepartamentoID
+);
+</code></pre>
+
+<h2>Explicação:</h2>
+
+<p>Analisando a <b>consulta externa</b>:</p>
+<pre><code class="language-sql">SELECT Nome, Salario, DepartamentoID
+FROM Funcionarios f
+WHERE Salario > (...)
+</code></pre>
+
+<p>Esta query processa cada funcionário e verifica se o salário dele é maior que a média calculada para o departamento ao qual ele pertence.</p>
+
+<p>Analisando a <b>subquery variável</b>:</p>
+<pre><code class="language-sql">SELECT AVG(Salario)
+FROM Funcionarios
+WHERE DepartamentoID = f.DepartamentoID
+</code></pre>
+<p>Para cada linha da consulta externa, esta query calcula a média salarial apenas dos funcionários do mesmo DepartamentoID do funcionário da linha atual.</p>
+
+
+<h2>Resultado:</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Salário</th>
+            <th>DepartamentoID</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Ana</td>
+            <td>4000</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td>Maria</td>
+            <td>5000</td>
+            <td>2</td>
+        </tr>
+    </tbody>
+
+{% endblock %}

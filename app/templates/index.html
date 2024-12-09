@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Base de Dados dos Alunos Matriculados em 2017/18</h1>
+
+<div style="display: flex;">
+  <div style="flex: 30%; padding-right: 150px;">
+    <h2>O nosso modelo relacional</h2>
+    <p>O modelo relacional à direita representa o universo dos Alunos Matriculados em Portugal no ano letivo de 2017/2018. Durante deste trabalho, a base de dados referida tem em conta a estrutura e ligações das keys deste nosso modelo criado.</p>
+
+    <h2>Alguns dados</h2>
+    <p>Aqui pode visualizar as alguns dados das seguintes tabelas:</p>
+    <ul>
+      <li><a href="/escolas/">Escolas</a></li>
+      <li><a href="/agrupamentos/">Agrupamentos</a></li>
+      <li><a href="/concelhos/">Concelhos</a></li>
+      <li><a href="/distritos/">Distritos</a></li>
+    </ul>
+
+    <h2>Explorar</h2>
+    <p>Quer ficar a conhecer mais sobre a realidade das escolas do país no ano letivo de 2017/18?<br>Confira <a href ="/AlunosMatriculados">aqui!</a></p>
+
+  </div>
+
+  <div style="flex: 30%; padding-top: 100px;">
+    <img src="{{ url_for('static', filename='images/Relacional.svg') }}" alt="Modelo Relacional" style="width: 100%">
+  </div>
+</div>
+
+
+{% endblock %}

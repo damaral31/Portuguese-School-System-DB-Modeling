@@ -1,0 +1,120 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Pergunta 8</h1>
+<p>
+    <b>Tópicos:</b>
+    <a href="/explicacao/Funcoesdeagregacao">Funções de Agregação</a>,
+    <a href="/explicacao/SubqueryVariavel">Subquery variável</a>,
+    <a href="/explicacao/ORDER_BY">ORDER BY</a>
+</p>
+
+<h2>Enunciado</h2>
+<p style= "font-size: 20px">
+    Qual o nome da escola com o maior número de alunos em distritos com mais de 1000 escolas?
+    Selecione o nome do distrito, o nome da escola e a quantidade de alunos.
+
+</p>
+<h2>Resolução</h2>
+<p>
+    Comecemos por calcular a soma de alunos por escola e distrito:
+</p>
+
+<pre><code class="language-sql">SELECT
+distritos.distrito,
+escolas.escola
+SUM(alunos.quantidade) AS max_quantidade,
+FROM distritos
+JOIN concelhos ON concelhos.distrito = distritos.cod
+JOIN escolas ON escolas.concelho = concelhos.cod
+JOIN turmas ON turmas.escola = escolas.cod
+JOIN alunos ON alunos.turma = turmas.cod
+GROUP BY escolas.escola
+</code></pre>
+
+<p>
+    Agora aplicamos a condição de distritos com mais de 1000 escolas:
+</p>
+
+<pre><code class="language-sql">HAVING distritos.cod IN (
+    SELECT d.cod
+    FROM distritos d
+    WHERE(
+        SELECT COUNT(*)
+        FROM concelhos c
+        JOIN escolas e ON e.concelho = c.cod
+        WHERE c.distrito = d.cod
+    ) > 1000
+    )
+</code></pre>
+
+<p>
+Note-se que é utilizada a técnica de subquery variável para obter o resultado desejado.(<code class="language-sql">WHERE c.distrito = d.cod</code>)
+</p>
+<p>
+    Por fim, escolhe-se a escola com o maior número de alunos:
+</p>
+<pre><code class="language-sql">SELECT
+    c1.distrito,
+    c1.escola,
+    MAX(c1.max_quantidade) AS alunos
+FROM c1
+
+
+</code></pre>
+<p>
+    Obtemos portanto a query na sua totalidade:
+</p>
+    <!--Query Inteira-->
+<pre><code class="language-sql">WITH c1 AS (
+    SELECT
+        distritos.distrito,
+        SUM(alunos.quantidade) AS max_quantidade,
+        escolas.escola
+    FROM distritos
+    JOIN concelhos ON concelhos.distrito = distritos.cod
+    JOIN escolas ON escolas.concelho = concelhos.cod
+    JOIN turmas ON turmas.escola = escolas.cod
+    JOIN alunos ON alunos.turma = turmas.cod
+    GROUP BY escolas.escola
+    HAVING distritos.cod IN (
+        SELECT d.cod
+        FROM distritos d
+        WHERE(
+            SELECT COUNT(*)
+            FROM concelhos c
+            JOIN escolas e ON e.concelho = c.cod
+            WHERE c.distrito = d.cod) > 1000)
+)
+
+SELECT
+    c1.distrito,
+    c1.escola,
+    MAX(c1.max_quantidade) AS alunos
+FROM c1
+   
+</code></pre>
+
+
+<h2>Resultado</h2>
+
+<table>
+    <tr>
+        <th>Distrito</th>
+        <th>Escola</th>
+        <th>NumeroAlunos</th>
+    <tr>
+        {% for row in resposta %}
+        <td>{{ row.distrito }}</td>
+        <td>{{ row.escola }}</td>
+        <td>{{ row.alunos }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+
+
+{% endblock %}
+    
