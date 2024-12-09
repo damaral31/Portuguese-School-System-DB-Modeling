@@ -330,8 +330,7 @@ SELECT
     SomaHomensComCondicao,
     SomaHomensSemCondicao,
     SomaMulheresComCondicao,
-    SomaMulheresSemCondicao,
-    c.MaisDeUmNUTSII
+    SomaMulheresSemCondicao
 FROM
     AlunosPorConcelho
 JOIN ConcelhosComMaisDeUmNUTSII c  on c.concelho=AlunosPorConcelho.NomeConcelho

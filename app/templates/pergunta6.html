@@ -46,7 +46,7 @@ E agrupamos por concelho e agrupamento:
 <p>
     Ordenando por concelho e agrupamento:
 </p>
-<pre><code class="language-sql">ORDER BY c.concelho ASC, agrupamentos.agrupamento ASC;
+<pre><code class="language-sql">ORDER BY concelhos.concelho ASC, agrupamentos.agrupamento ASC;
 </code></pre>
 
 <p>
@@ -64,10 +64,11 @@ WHERE turmas.natureza = 'Público' AND turmas.tipologia = 'EB'
 GROUP BY concelhos.concelho, agrupamentos.agrupamento
 HAVING COUNT(escolas.cod) > 4
 ORDER BY
-c.concelho,
-agrupamentos.agrupamento;
+    concelhos.concelho,
+    agrupamentos.agrupamento;
    
 </code></pre>
+
 
 
 <h2>Resultado</h2>
