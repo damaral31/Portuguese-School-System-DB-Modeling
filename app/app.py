@@ -31,7 +31,7 @@ def conjuntos():
 def funcoes_de_agragacao():
     return render_template('Funcoes_de_agregacoes.html')
 
-@APP.route('/explicacao/Case_explicacao')
+@APP.route('/explicacao/Case')
 def case():
     return render_template('Cases_explicacao.html')
 
@@ -47,9 +47,14 @@ def join():
 def agregacaoDupla():
     return render_template('explicacaoAgregacaoDupla.html')
 
-@APP.route('/explicacao/row_number')
+@APP.route('/explicacao/ROW_NUMBER')
 def rowNumber():
     return render_template('explicacaoRowNumber.html')
+
+@APP.route('/explicacao/SubqueryVariavel')
+def subqueryVariavel():
+    return render_template('explicacaoSubqueryVariavel.html')
+
 
 @APP.route('/pergunta/1')
 def pergunta1():
@@ -147,14 +152,6 @@ def pergunta5():
         c.concelho ASC;
     ''').fetchall()
     return render_template('pergunta5.html', resposta=resposta)
-
-
-# DIOGO
-@APP.route('/explicacao/Subquery_Variavel')
-def subqueryVariavel():
-    return render_template('explicacaoSubqueryVariavel.html')
-
-
 
 @APP.route('/pergunta/6')
 def pergunta6():
@@ -360,7 +357,7 @@ def listar_distritos():
 @APP.route('/concelhos/')
 def listar_concelhos():
     concelhos = db.execute('''
-        SELECT concelhos.cod, concelhos.concelho, COUNT(*) num_escolas, distritos.distrito
+        SELECT concelhos.cod, concelhos.concelho, COUNT(*) num_escolas, distritos.distrito, distritos.cod as codDistrito
         FROM concelhos
         JOIN distritos ON distritos.cod = concelhos.distrito
         JOIN escolas ON escolas.concelho = concelhos.cod
@@ -369,10 +366,21 @@ def listar_concelhos():
     ''').fetchall()
     return render_template('listar_concelhos.html', concelhos=concelhos)
 
+@APP.route('/agrupamentos/')
+def listar_agrupamentos():
+    agrupamentos = db.execute('''
+        SELECT agrupamentos.cod, agrupamentos.agrupamento, COUNT(*) num_escolas
+        FROM agrupamentos
+        JOIN escolas ON escolas.agrupamento = agrupamentos.cod
+        GROUP BY agrupamentos.cod
+        ORDER BY agrupamentos.cod
+    ''').fetchall()
+    return render_template('listarAgrupamentos.html', agrupamentos=agrupamentos)
+
 @APP.route('/escolas/')
 def listar_escolas():
     escolas = db.execute('''
-        SELECT escolas.cod, escolas.escola, count() as num_turmas, concelhos.concelho
+        SELECT escolas.cod, escolas.escola, count() as num_turmas, concelhos.concelho, concelhos.cod as codConcelho
         FROM escolas
         JOIN concelhos ON concelhos.cod = escolas.concelho
         JOIN distritos ON distritos.cod = concelhos.distrito
@@ -564,3 +572,12 @@ def visualizarEscolasNoAgrupamento(codAgrupamento):
         JOIN agrupamentos ON agrupamentos.cod = escolas.agrupamento
         where agrupamentos.cod = ?''', (codAgrupamento, codAgrupamento,)).fetchall()
     return render_template('escolasNoAgrupamento.html', agrupamentoX = agrupamentoX)
+
+
+@APP.route('/listarPerguntas')
+def listarPerguntas():
+    return render_template('listarPerguntas.html')
+
+@APP.route('/listarExplicacoes')
+def listarExplicacoes():
+    return render_template('listarExplicacoes.html')

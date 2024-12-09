@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+    
+{% block content %}
+
+<p><br></p>
+
+<style>
+    h2 {
+        font-size: 24px; /* Ajuste o valor conforme necessário */
+    }
+</style>
+
+<h2>
+<a href="/pergunta/1">Pergunta 1:</a>
+</h2>
+<p>Em cada concelho, quantas escolas que não pertencem a um agrupamento existem?
+    Utilize vários tipos de JOIN. Ordene por concelho.</p>
+
+<h2>
+<a href="/pergunta/2">Pergunta 2:</a>
+</h2>
+<p>Quais os cursos que um aluno do Porto ou Lisboa pode frequentar? Ordene por distrito e por curso.</p>
+
+<h2>
+<a href="/pergunta/3">Pergunta 3:</a>
+</h2>
+<p>De todas as escolas sede, escolhe aquelas que não são nem do Centro nem do Alentejo (NUTSII)</p>
+
+
+<h2>
+<a href="/pergunta/4">Pergunta 4:</a>
+</h2>
+<p>Qual é o distrito com menos turmas de nivel de ensino secundário? Selecione o nome do distrito e o número de turmas.</p>
+
+
+<h2>
+<a href="/pergunta/5">Pergunta 5:</a>
+</h2>
+<p>Selecione o nome do concelho, a escola e o número de turmas como "Nº de turmas" das turmas que a organização contém "S3" no nome.
+    Ordene por número de turmas descendente e por nome dos concelhos.</p>
+
+
+<h2>
+<a href="/pergunta/6">Pergunta 6:</a>
+</h2>
+<p>Selecione todos os agrupamentos em concelhos com mais de 30 escolas de natureza pública e tipologia "EB". Ordene por agrupamento</p>
+
+
+<h2>
+<a href="/pergunta/7">Pergunta 7:</a>
+</h2>
+<p>Quais os 5 distritos com menor número de raparigas por turma, em média? Considere apenas turmas pertencentes a escolas. Ordene do menor número de raparigas para o maior.</p>
+
+
+<h2>
+<a href="/pergunta/8">Pergunta 8:</a>
+</h2>
+<p>Qual o nome da escola com o maior número de alunos em distritos com mais de 1000 escolas?
+    Selecione o nome do distrito, o nome da escola e a quantidade de alunos.</p>
+
+
+<h2>
+<a href="/pergunta/9">Pergunta 9:</a>
+</h2>
+<p>Faz uma classificação qualitativa das escolas quanto ao número de turmas e média de alunos:<br>
+    Se o número de turmas < média de turmas por escola -> Tem poucas turmas<br>
+    Se o número de turmas >= média de turmas por escola e o número de alunos < média de alunos por escola (globalmente) -> Poucos alunos por escola<br>
+    Se o número de turmas >= média de turmas por escola e o número de alunos  >= média de alunos por escola (globalmente) -> A escola esta sobrepopulada<br>
+    O resultado deve ter o nome da escola a quantidade de alunos e a classificação obtida ordenada por nome da escola</p>
+
+
+<h2>
+<a href="/pergunta/10">Pergunta 10:</a>
+</h2>
+<p>Recolha a soma de todos os alunos 'Home</h2>ns' e 'Mulheres', separadamente, de todas escolas sede de um concelho. <br>
+    CONDIÇÃO: Caso o concelho seja situado num distrito que pertença a mais do que uma NUTSII, registe paralelamente a soma dos alunos 'Homens' e 'Mulheres' das turmas que tenham nível 'Ensino Básico'.<br>
+    Deve retornar o Nome do Concelho, a Soma dos Homens com a condição aplicada, a Soma dos Homens sem a condição aplicada, a Soma das Mulheres com a condição aplicada e a Soma das Mulheres sem a condição aplicada.
+    Ordene por concelho.</p>
+
+{% endblock %}

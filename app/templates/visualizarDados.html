@@ -8,13 +8,13 @@
 <form method="POST" style="display: flex; flex-direction: column; gap: 1rem;">
     <!-- Filtro por Nome da Escola -->
     <div>
-        <label for="escola">Filtrar por Nome da Escola:</label>
+        <label for="escola">Nome da Escola:</label>
         <input type="text" id="escola" name="escola" value="{{ selected_escola or '' }}" placeholder="Digite o nome da escola">
     </div>
 
     <!-- Filtro por Concelho -->
     <div>
-        <label for="concelho">Filtrar por Concelho:</label>
+        <label for="concelho">Concelho:</label>
         <select name="concelho" id="concelho">
             <option value="">Todos</option>
             {% for concelho in concelhos|sort(attribute='concelho') %}
@@ -27,7 +27,7 @@
 
     <!-- Filtro por Distrito -->
     <div>
-        <label for="distrito">Filtrar por Distrito:</label>
+        <label for="distrito">Distrito:</label>
         <select name="distrito" id="distrito">
             <option value="">Todos</option>
             {% for distrito in distritos|sort(attribute='distrito') %}
@@ -42,14 +42,14 @@
     <div>
         <label for="n_homens_min">Número de Homens:</label>
         <div style="display: flex; align-items: center; gap: 1rem;">
-            <input type="range" id="n_homens_min" name="n_homens_min" min="0" max="500" step="1" 
+            <input type="range" id="n_homens_min" name="n_homens_min" min="0" max="1213" step="1" 
                    value="{{ selected_n_homens_min or 0 }}" 
                    oninput="updateSliderValues()">
-            <input type="range" id="n_homens_max" name="n_homens_max" min="0" max="500" step="1" 
-                   value="{{ selected_n_homens_max or 500 }}" 
+            <input type="range" id="n_homens_max" name="n_homens_max" min="0" max="1213" step="1" 
+                   value="{{ selected_n_homens_max or 1213 }}" 
                    oninput="updateSliderValues()">
             <span>De: <span id="sliderHomensMin">{{ selected_n_homens_min or 0 }}</span></span>
-            <span>Até: <span id="sliderHomensMax">{{ selected_n_homens_max or 500 }}</span></span>
+            <span>Até: <span id="sliderHomensMax">{{ selected_n_homens_max or 1213 }}</span></span>
         </div>
     </div>
 
@@ -57,14 +57,14 @@
     <div>
         <label for="n_mulheres_min">Número de Mulheres:</label>
         <div style="display: flex; align-items: center; gap: 1rem;">
-            <input type="range" id="n_mulheres_min" name="n_mulheres_min" min="0" max="500" step="1" 
+            <input type="range" id="n_mulheres_min" name="n_mulheres_min" min="0" max="1158" step="1" 
                    value="{{ selected_n_mulheres_min or 0 }}" 
                    oninput="updateSliderValues()">
-            <input type="range" id="n_mulheres_max" name="n_mulheres_max" min="0" max="500" step="1" 
-                   value="{{ selected_n_mulheres_max or 500 }}" 
+            <input type="range" id="n_mulheres_max" name="n_mulheres_max" min="0" max="1158" step="1" 
+                   value="{{ selected_n_mulheres_max or 1158 }}" 
                    oninput="updateSliderValues()">
             <span>De: <span id="sliderMulheresMin">{{ selected_n_mulheres_min or 0 }}</span></span>
-            <span>Até: <span id="sliderMulheresMax">{{ selected_n_mulheres_max or 500 }}</span></span>
+            <span>Até: <span id="sliderMulheresMax">{{ selected_n_mulheres_max or 1158 }}</span></span>
         </div>
     </div>
 
@@ -117,8 +117,11 @@
     }
 </script>
 
+{% if not tabela %}
+<p>Não foi possivel encontrar uma escola portuguesa com os seus filtros.<br>Exprimente novamente.</p>
 
 
+{% else %}
 <table>
     <tr>
         <th>Escola</th>
@@ -145,6 +148,8 @@
     </tr>
     {% endfor %}
 </table>
+
+{% endif %}
 
 
 {% endblock %}

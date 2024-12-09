@@ -5,7 +5,12 @@
 
 <h1>Pergunta 10</h1>
 <p>
-    <b>Tópicos:</b>where comparaçao de strings conjuntos funcoes de agregacao,subqueries,case
+    <b>Tópicos:</b>
+    <a href="/explicacao/WHERE">WHERE</a>,
+    <a href="/explicacao/Conjuntos">Conjuntos</a>,
+    <a href="/explicacao/Funcoesdeagregacao">Funções de Agregação</a>,
+    <a href="/explicacao/Subqueries">Subqueries</a>,
+    <a href="/explicacao/Case">Case</a>
 </p>
 
 <h2>Enunciado</h2>
@@ -178,8 +183,7 @@ SELECT
     SomaHomensComCondicao,
     SomaHomensSemCondicao,
     SomaMulheresComCondicao,
-    SomaMulheresSemCondicao,
-    c.MaisDeUmNUTSII
+    SomaMulheresSemCondicao
 FROM
     AlunosPorConcelho
 JOIN ConcelhosComMaisDeUmNUTSII c  on c.concelho=AlunosPorConcelho.NomeConcelho
@@ -196,7 +200,6 @@ ORDER BY
         <th>SomaHomensSemCondicao</th>
         <th>SomaMulheresComCondicao</th>
         <th>SomaMulheresSemCondicao</th>
-        <th>MaisDeUmNUTSII</th>
     </tr>
     <tr>
         {% for row in resposta %}
@@ -205,7 +208,6 @@ ORDER BY
         <td>{{ row.SomaHomensSemCondicao }}</td>
         <td>{{ row.SomaMulheresComCondicao }}</td>
         <td>{{ row.SomaMulheresSemCondicao }}</td>
-        <td>{{ row.MaisDeUmNUTSII }}</td>
         
     </tr>
     {% endfor %}

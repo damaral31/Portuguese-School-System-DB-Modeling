@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<h1>Distritos</h1>
+<h1>Agrupamentos</h1>
 
 <table>
   <tr>
@@ -10,22 +10,22 @@
       Código
     </th>
     <th>
-      Designação
+      Agrupamento
     </th>
     <th>
-      Nº de concelhos
+      Nº de escolas
     </th>
   </tr>
-  {% for d in distritos %}
+  {% for d in agrupamentos %}
   <tr>
     <td>
       {{ d.cod }}
     </td> 
     <td>
-      <a href="/distritos/{{ d.cod }}/">{{ d.distrito }}</a>
+      <a href="/agrupamentos/{{ d.cod }}/">{{ d.agrupamento }}</a>
     </td> 
     <td>
-      {{d.num_concelhos }}
+      {{d.num_escolas }}
     </td>
   </tr>
   {% endfor %}

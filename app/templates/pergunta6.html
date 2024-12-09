@@ -5,15 +5,16 @@
 
 <h1>Pergunta 6</h1>
 <p>
-    <b>Tópicos:</b> Where, funcoes de agregação, joins
+    <b>Tópicos:</b> 
+    <a href="/explicacao/WHERE">WHERE</a>,
+    <a href="/explicacao/Funcoesdeagregacao">Funções de Agregação</a>,
+    <a href="/explicacao/JOIN">JOIN</a>
 </p>
 
 <h2>Enunciado</h2>
 <p style= "font-size: 20px">
-    Selecione todos os agrupamentos em concelhos com mais de <b>30</b> escolas de natureza pública e tipologia <b>"EB"</b> ordena por agrupamento
+    Selecione todos os agrupamentos em concelhos com mais de <b>30</b> escolas de natureza pública e tipologia <b>"EB"</b> ordena por agrupamento.
 </p>
-
-
 
 <h2>Resolução</h2>
 <p>
@@ -43,7 +44,7 @@ E agrupamos por concelho e agrupamento:
 <p>
     Ordenando por concelho e agrupamento:
 </p>
-<pre><code class="language-sql">ORDER BY c.concelho ASC, agrupamentos.agrupamento ASC;
+<pre><code class="language-sql">ORDER BY concelhos.concelho ASC, agrupamentos.agrupamento ASC;
 </code></pre>
 
 <p>
@@ -61,10 +62,11 @@ WHERE turmas.natureza = 'Público' AND turmas.tipologia = 'EB'
 GROUP BY concelhos.concelho, agrupamentos.agrupamento
 HAVING COUNT(escolas.cod) > 4
 ORDER BY
-c.concelho,
-agrupamentos.agrupamento;
+    concelhos.concelho,
+    agrupamentos.agrupamento;
    
 </code></pre>
+
 
 
 <h2>Resultado</h2>
