@@ -28,7 +28,7 @@
 <h2>Resolução</h2>
 <p>
     Comecemos por destacar os concelhos que situam-se em distritos que pertencem a mais do que uma NUTSII.</p>
-    <p>Para tal, conta-se a quantidade de NUTSII que cada distrito tem e se tiver mais que 1 registar True senao falso</p>
+    <p>Para tal, conta-se a quantidade de NUTSII que cada distrito tem e se tiver mais que 1 registar True senão False</p>
 
 <pre><code class="language-sql"> WITH NUTSII_Por_Distrito AS (
     SELECT
@@ -51,7 +51,7 @@
 </code></pre>
 
 <p>
-    Para agora saber os concelhos que pertencem a distritos que pertencem a mais do que uma NUTSII, junta-se a tabela anterior com a tabela de concelhos.
+    Para agora saber os concelhos que se situam em distritos que pertencem a mais do que uma NUTSII, junta-se a tabela anterior com a tabela de concelhos.
 </p>
 
 <pre><code class="language-sql">SELECT
@@ -95,11 +95,11 @@ Agora respeitando a condição do enunciado, vamos calcular a soma de todos os a
 </code></pre>
 <p>
     É importante referir como a condição <code class="language-sql">SUM()</code> funciona neste caso. A condição
-    divide-se então em tres partes:
+    divide-se então em 3 partes:
     <ul>
-        <li><code class="language-sql">WHEN a.sexo like 'Homens'</code> - Verifica se o aluno é do sexo masculino</li>
-        <li><code class="language-sql">and (c.MaisDeUmNUTSII = TRUE AND t.nivel  like 'Ensino básico')</code> - Verifica se o concelho situa-se a um distrito que pertence a mais do que uma NUTSII e se a turma é de nível 'Ensino básico'.</li>
-        <li><code class="language-sql">OR c.MaisDeUmNUTSII = FALSE</code> - Se a condição anterior não for satisfeita, adiciona todos os alunos sem restrições</li>
+        <li><code class="language-sql">WHEN a.sexo like 'Homens'</code> - Verifica-se o aluno é do sexo masculino</li>
+        <li><code class="language-sql">and (c.MaisDeUmNUTSII = TRUE AND t.nivel  like 'Ensino básico')</code> - Verifica-se o concelho situa-se a um distrito que pertence a mais do que uma NUTSII e se a turma é de nível 'Ensino básico'.</li>
+        <li><code class="language-sql">OR c.MaisDeUmNUTSII = FALSE</code> - Se a condição anterior não for satisfeita, adiciona-se todos os alunos sem restrições</li>
     </ul>
 </p>
 <p>
