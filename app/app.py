@@ -55,12 +55,16 @@ def rowNumber():
 def subqueryVariavel():
     return render_template('explicacaoSubqueryVariavel.html')
 
+@APP.route('/explicacao/Subqueries')
+def subquery():
+    return render_template('explicacaoSubquery.html')
 
 @APP.route('/pergunta/1')
 def pergunta1():
     resposta = db.execute('''
     SELECT
         concelhos.concelho as concelho,
+        concelhos.cod as cod, 
         COUNT(escolas.cod) as num
     FROM concelhos
     JOIN escolas ON escolas.concelho = concelhos.cod
@@ -75,21 +79,21 @@ def pergunta2():
     resposta = db.execute('''
     SELECT
         d.distrito AS Distrito,
+        d.cod AS cod,
         t.oferta AS Curso
     FROM Alunos a
     JOIN Turmas t ON a.turma = t.cod
     JOIN Escolas e ON t.escola = e.cod
     JOIN Concelhos c ON e.concelho = c.cod
     JOIN Distritos d ON c.distrito = d.cod
-
     LEFT JOIN EntidadesEscola ee ON t.entidadeEscola = ee.cod
     LEFT JOIN Concelhos cee ON ee.concelho = cee.cod
     LEFT JOIN Distritos dee ON cee.distrito = dee.cod
     WHERE(
-        d.distrito IN ("Porto", "Lisboa")
-        OR dee.distrito IN ("Porto", "Lisboa")
+        d.distrito IN ('Porto', 'Lisboa')
+        OR dee.distrito IN ('Porto', 'Lisboa')
     )
-        AND t.oferta IS NOT NULL
+        AND t.oferta NOT NULL
     GROUP BY d.distrito, t.oferta
     ORDER BY d.distrito ASC, t.oferta ASC;
     ''').fetchall()
@@ -98,7 +102,8 @@ def pergunta2():
 @APP.route('/pergunta/3')
 def pergunta3():
     resposta = db.execute('''SELECT
- escolas.escola AS NomeEscola
+ escolas.escola AS NomeEscola,
+escolas.cod AS cod
 FROM
     escolas
 JOIN
@@ -118,9 +123,11 @@ def pergunta4():
     resposta = db.execute('''
     SELECT
         sub.distrito AS Distrito,
+        sub.cod AS cod,
         MIN(sub.num) AS num
     FROM (
         SELECT
+            d.cod AS cod,
             d.distrito AS distrito,
             COUNT(t.cod) AS num
         FROM distritos d
@@ -130,33 +137,35 @@ def pergunta4():
         WHERE t.nivel LIKE "Ensino Secundário"
         GROUP BY d.cod, d.distrito
     ) AS sub;
-    ''').fetchall()
+''').fetchall()
     return render_template('pergunta4.html', resposta=resposta)
   
 @APP.route('/pergunta/5')
 def pergunta5():
-    resposta = db.execute('''
-    SELECT
-        c.concelho,
-        e.escola,
-        COUNT(t.cod) AS num
-    FROM Turmas t
-    JOIN Escolas e ON t.escola = e.cod
-    JOIN Concelhos c ON e.concelho = c.cod
-    WHERE t.organizacao LIKE '%S3%'
-    GROUP BY
-        c.concelho,
-        e.escola
-    ORDER BY
-        num DESC,
-        c.concelho ASC;
-    ''').fetchall()
+    resposta = db.execute('''SELECT
+c.concelho,
+c.cod,
+e.cod AS cod_escola,
+e.escola,
+COUNT(t.cod) AS num
+FROM Turmas t
+JOIN Escolas e ON t.escola = e.cod
+JOIN Concelhos c ON e.concelho = c.cod
+WHERE t.organizacao LIKE '%S3%'
+GROUP BY
+    c.concelho,
+    e.escola
+ORDER BY
+    num DESC,
+    c.concelho ASC;''').fetchall()
     return render_template('pergunta5.html', resposta=resposta)
 
 @APP.route('/pergunta/6')
 def pergunta6():
     resposta = db.execute('''
 SELECT
+concelhos.cod as cod,
+agrupamentos.cod as cod_agrupamento,   
 concelhos.concelho as concelho,
 agrupamentos.agrupamento as agrupamento
 FROM agrupamentos
@@ -174,32 +183,34 @@ agrupamentos.agrupamento''').fetchall()
 @APP.route('/pergunta/7')
 def pergunta7():
     resposta = db.execute('''
-    WITH MediaRaparigasPorDistrito AS (
-        SELECT
-            d.distrito,
-            AVG(a.quantidade) AS media_raparigas
-        FROM distritos d
-        JOIN concelhos c ON d.cod = c.distrito
-        JOIN escolas e ON c.cod = e.concelho
-        JOIN turmas t ON e.cod = t.escola
-        JOIN alunos a ON t.cod = a.turma
-        WHERE a.sexo = 'Mulheres'
-        GROUP BY d.distrito
-    ),
-    DistritosOrdenados AS (
-        SELECT
-            distrito,
-            media_raparigas,
-            ROW_NUMBER() OVER (ORDER BY media_raparigas ASC) AS rank
-        FROM MediaRaparigasPorDistrito
-    )
-
+WITH MediaRaparigasPorDistrito AS (
+ SELECT
+        d.cod AS cod,
+        d.distrito,
+        AVG(a.quantidade) AS media_raparigas
+    FROM distritos d
+    JOIN concelhos c ON d.cod = c.distrito
+    JOIN escolas e ON c.cod = e.concelho
+    JOIN turmas t ON e.cod = t.escola
+    JOIN alunos a ON t.cod = a.turma
+    WHERE a.sexo = 'Mulheres'
+    GROUP BY d.distrito
+),
+DistritosOrdenados AS (
     SELECT
-        distrito AS Distrito,
-        media_raparigas AS med
-    FROM DistritosOrdenados
-    WHERE rank <= 5
-    ORDER BY rank;
+        cod,
+        distrito,
+        media_raparigas,
+        ROW_NUMBER() OVER (ORDER BY media_raparigas ASC) AS rank 
+    FROM MediaRaparigasPorDistrito                             
+)
+SELECT
+    cod AS Cod,
+    distrito AS Distrito,
+    media_raparigas AS med
+FROM DistritosOrdenados
+WHERE rank <= 5
+ORDER BY rank;
     ''').fetchall()
     return render_template('pergunta7.html', resposta=resposta)
 
@@ -207,6 +218,8 @@ def pergunta7():
 def pergunta8():
     resposta = db.execute('''WITH c1 AS (
     SELECT
+        distritos.cod AS cod,
+        escolas.cod AS cod_escola,
         distritos.distrito,
         SUM(alunos.quantidade) AS max_quantidade,
         escolas.escola
@@ -227,6 +240,8 @@ def pergunta8():
 )
 
 SELECT
+    c1.cod,
+    c1.cod_escola,
     c1.distrito,
     c1.escola,
     MAX(c1.max_quantidade) AS alunos
@@ -238,6 +253,7 @@ def pergunta9():
     resposta = db.execute('''
                           WITH EstatisticasEscolas AS (
     SELECT
+        escolas.cod AS CodEscola,
         escolas.escola AS NomeEscola,
         COUNT(DISTINCT turmas.cod) AS NumeroTurmas,
         SUM(alunos.quantidade) AS NumeroAlunos
@@ -257,6 +273,7 @@ MediasGlobais AS (
 
 
 SELECT
+    ee.CodEscola,
     ee.NomeEscola,
     ee.NumeroAlunos,
     CASE
@@ -329,6 +346,7 @@ AlunosPorConcelho AS (
 )
 
 SELECT
+    c.concelhoCod as cod,
     NomeConcelho,
     SomaHomensComCondicao,
     SomaHomensSemCondicao,
@@ -340,7 +358,7 @@ FROM
 JOIN ConcelhosComMaisDeUmNUTSII c  on c.concelho=AlunosPorConcelho.NomeConcelho
 ORDER BY
     NomeConcelho;''').fetchall()
-    return render_template('pergunta10.html', resposta=resposta)                      
+    return render_template('pergunta10.html', resposta=resposta)                                         
 
 
 @APP.route('/distritos/')

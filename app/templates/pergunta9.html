@@ -132,15 +132,13 @@ ORDER BY
     </tr>
     <tr>
         {% for row in resposta %}
-        <td>{{ row.NomeEscola }}</td>
+        <td><a href="/escolas/{{ row.cod }}">{{ row.NomeEscola }}</a></td>
         <td>{{ row.NumeroAlunos }}</td>
         <td>{{ row.Classificacao }}</td>
         
     </tr>
     {% endfor %}
 </table>
-
-
 
 {% endblock %}
     
