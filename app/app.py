@@ -478,7 +478,7 @@ def visualizarDados():
         query += f' ORDER BY tabela.{column} {order.upper()}'
 
     # Limita os resultados
-    query += ' LIMIT 50'
+    query += ' LIMIT 1000'
 
     # Executa a query
     tabela = db.execute(query, params).fetchall()
